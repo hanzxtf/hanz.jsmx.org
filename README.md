@@ -29,12 +29,6 @@ A modern, flexible foundation for building high-performance marketing websites w
 │   └── forms/                      # Form handling
 ├── config/                         # Django settings and configuration
 ├── db/                             # SQLite database files
-├── dev/                            # Development environment configuration
-│   ├── docker-compose.dev.yml      # Docker Compose configuration for development
-│   ├── Dockerfile                  # Dockerfile for development environment
-│   ├── init.sh                     # Initialization script for development container
-│   ├── litestream.yml              # Litestream configuration for SQLite replication
-│   └── supervisord.conf            # Supervisor configuration for running services
 ├── frontend/                       # Frontend source files and build configuration
 │   ├── src/                        # Source files
 │   │   ├── app/                    # JavaScript application code
@@ -46,7 +40,9 @@ A modern, flexible foundation for building high-performance marketing websites w
 │   │       └── styles.css
 │   ├── package.json                # Frontend dependencies
 │   ├── vite.config.mjs             # Vite build configuration
-│   └── bun.lock                    # Bun lock file
+│   └── pnpm-lock.yaml              # pnpm lock file
+├── prod/                           # Production configuration
+│   └── freebsd/                    # nginx, litestream, pf, rc.d, deploy scripts
 ├── templates/                      # Django templates
 │   ├── pages/                      # Page-specific templates
 │   ├── blocks/                     # StreamField block templates
@@ -54,67 +50,59 @@ A modern, flexible foundation for building high-performance marketing websites w
 │   └── snippets/                   # Snippet templates
 ├── .env                            # Environment variables
 ├── .gitignore
-├── Dockerfile
-├── Makefile
+├── justfile                        # Canonical entrypoint (dev and FreeBSD prod)
 ├── manage.py
-├── mise.toml
+├── mise.development.toml           # mise tools for dev
+├── mise.production.toml            # mise tools for prod
 ├── pyproject.toml
+├── requirements.txt
 └── uv.lock
 ```
 
 ## Development Setup
 
-This project uses `mise` for dependency management and `Docker` for the development environment.
+Requires Linux or macOS. [mise](https://mise.jdx.dev/) provides Python, uv, Node and pnpm; `just` runs the recipes.
 
-1. **Prerequisites**
-
-   Install `mise` to manage project dependencies:
+1. **Install mise and just**
 
    ```bash
-   # On macOS
-   brew install mise
-
-   # Or follow installation instructions at https://mise.jdx.dev/
+   # macOS
+   brew install mise just
    ```
 
-2. **Clone the repository**
+2. **Install dependencies**
 
    ```bash
-   git clone <repository-url>
-   cd wagtail-starter-kit
-   ```
-
-3. **Install dependencies with mise**
-
-   ```bash
-   # Trust the mise configuration and install dependencies
    mise trust && mise install
+   just install
    ```
 
-4. **Start the development environment**
+3. **Start the development environment**
 
    ```bash
-   # This will start Django, Vite, and all required services in Docker
-   make dev
+   just dev
    ```
 
-5. **Access the application**
+4. **Access the application**
 
    - Django: http://localhost:8000
    - Wagtail Admin: http://localhost:8000/admin/
    - Django Admin: http://localhost:8000/django-admin/
    - Vite Dev Server: http://localhost:5173
 
+The database is a SQLite file at `db/database.db`; media files live on disk.
+
 ## Development Workflow
 
-After starting the development environment with `make dev`, you can:
+`just` is the only entrypoint. Run `just` to list all recipes.
 
-- View logs: `make dev-logs`
-- Enter the app container: `make dev-bash`
-- Once inside the container, run Django commands like:
-  - `make migrate` - Run database migrations
-  - `make makemigrations` or `make make` - Create new migrations
-- Create a superuser: `make dev-createsuperuser` (run from host)
+- `just dev` - Run Django (uvicorn) and Vite together
+- `just django-dev` / `just vite-dev` - Run one of them alone
+- `just dev-migrate` - Apply database migrations
+- `just makemigrations` - Create new migrations
+- `just vite-build` - Build frontend assets
+- `just install` - Sync Python and frontend dependencies
+- `uv run manage.py createsuperuser` - Create an admin user
 
 ## Content Modeling
 
@@ -207,13 +195,13 @@ The starter kit includes a comprehensive set of reusable blocks:
 ### Asset Pipeline
 
 - Vite for bundling and optimization
-- Bun for fast JavaScript package management
+- pnpm for JavaScript package management
 - Development and production build configurations
 
 ## Performance Features
 
 - SQLite as primary database with Litestream replication
-- Seperate SQLite database for caching with wagtail-cache
+- Local-memory caching with wagtail-cache
 - Frontend cache invalidation
 - Template fragment caching
 - Image optimization with Wagtail's image tag
@@ -227,10 +215,12 @@ The starter kit includes a comprehensive set of reusable blocks:
 
 ## Deployment
 
-- Environment variables for configuration
+Production runs on FreeBSD, provisioned end to end by the `prod-*` and `freebsd-*` recipes in the `justfile` (nginx, litestream, pf, rc.d services).
+
+- Environment variables for configuration (`.env.prod` -> `/usr/local/etc/wagtail/env`)
 - WhiteNoise for static file serving
-- Docker support for consistent environments
-- CI/CD pipeline ready
+- Litestream for SQLite replication to S3
+- `prod/freebsd/scripts/deploy.sh` for pull-based deploys
 
 ## Contributing
 

@@ -195,6 +195,9 @@ vite-dev:
 vite-build:
 	cd frontend && pnpm run build
 
+clean:
+	rm -rf .venv frontend/dist frontend/node_modules
+
 [parallel]
 install: vite-install django-install
 
