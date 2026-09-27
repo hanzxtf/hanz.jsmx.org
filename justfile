@@ -148,9 +148,9 @@ setup-staticfiles:
 	CMD="$VENV_PY manage.py collectstatic --no-input --clear" just run-www
 
 setup-db:
-    just migrate
+    just prod-migrate
 
-migrate:
+prod-migrate:
 	CMD="$VENV_PY manage.py migrate" just run-www
 
 prod-start:
@@ -185,6 +185,9 @@ django-dev:
 
 makemigrations:
 	uv run manage.py makemigrations
+
+dev-migrate:
+	uv run manage.py migrate
 
 vite-dev:
 	cd frontend && pnpm run dev
