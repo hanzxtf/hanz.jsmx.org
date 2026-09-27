@@ -1,5 +1,48 @@
 # Changelog
 
+## 0.1.0 (2026-09-27)
+
+
+### Features
+
+* add dev migration command and rename prod one ([acc070d](https://github.com/hanzxtf/hanz.jsmx.org/commit/acc070d5d11e4d3e8983d123d9e4b146fcf51a70))
+* add requirements.txt ([ec1c5c5](https://github.com/hanzxtf/hanz.jsmx.org/commit/ec1c5c511a4b2f4875e65d2e26d53366dcc9b04c))
+* add vite build assets as part of repo ([f7f78a5](https://github.com/hanzxtf/hanz.jsmx.org/commit/f7f78a5ceea7b98f9bd969e2c457fcd0c717011a))
+* cache - inmem; disable whitenoise on prod ([91fd30a](https://github.com/hanzxtf/hanz.jsmx.org/commit/91fd30ae86f3857f3ac9e44ae41c0f85e66c6513))
+* freebsd prod setup ([1f6e595](https://github.com/hanzxtf/hanz.jsmx.org/commit/1f6e5954261608ad628cfee9da77101457039dbd))
+* node 24, uv 0.11 ([ba8b824](https://github.com/hanzxtf/hanz.jsmx.org/commit/ba8b824111f22735c6e670786d79174cefb90c6f))
+* not using mise for deps on prod; fbsd ([5182dc1](https://github.com/hanzxtf/hanz.jsmx.org/commit/5182dc107871988302a5a5fe0216fbd112d0af63))
+* optimize cache ([c5aaf6d](https://github.com/hanzxtf/hanz.jsmx.org/commit/c5aaf6d868d7c546edac849e02eb964eb8e34722))
+* prod almost ready ([ff3d15f](https://github.com/hanzxtf/hanz.jsmx.org/commit/ff3d15fcb310c875577892530ad593b4b8fc736a))
+* refactor + optimize nginx ([684b33e](https://github.com/hanzxtf/hanz.jsmx.org/commit/684b33eae81d4573f7f848c6f003e4e843e08715))
+* revamp prod, dev settings ([686b1ae](https://github.com/hanzxtf/hanz.jsmx.org/commit/686b1aea74e2b8781c72616790b38ae278ceab48))
+* update theme ([c5fdc2f](https://github.com/hanzxtf/hanz.jsmx.org/commit/c5fdc2f55182fca64d0b831107739ace3aa3e1e0))
+* upgrade django wagtail lts ([b1732ac](https://github.com/hanzxtf/hanz.jsmx.org/commit/b1732ac3c2c1c888fa39a4f8da32e7830a8b4e08))
+* upgrade django, wagtail LTS ([b1732ac](https://github.com/hanzxtf/hanz.jsmx.org/commit/b1732ac3c2c1c888fa39a4f8da32e7830a8b4e08))
+* upgrade pkgs ([80db6b3](https://github.com/hanzxtf/hanz.jsmx.org/commit/80db6b31aaa74e6bcf6660542b39653b0921a3fa))
+* upgraded requirements.txt for prod ([7947f05](https://github.com/hanzxtf/hanz.jsmx.org/commit/7947f05752875e5158cd54e81160f42ded64d213))
+* use mise prod/dev ([62ab1dd](https://github.com/hanzxtf/hanz.jsmx.org/commit/62ab1dde6ef38edd3712b978847211fc083eecce))
+* use node 22 + pnpm 10 over bun ([5762f7c](https://github.com/hanzxtf/hanz.jsmx.org/commit/5762f7c48e954a56db4bca71568dc4783688a280))
+* use python 3.11 for fbsd ([3cea5cf](https://github.com/hanzxtf/hanz.jsmx.org/commit/3cea5cf60a8c9dd81a834a3539652b09a4ea03d5))
+* use uvicorn ([465d738](https://github.com/hanzxtf/hanz.jsmx.org/commit/465d73866ce4e996f8983b5f44a3f56c0b862e20))
+* use wrk2 to bench rps/latency ([8dcb4c6](https://github.com/hanzxtf/hanz.jsmx.org/commit/8dcb4c690bdb24c51a73b513fed9c0d227e99f8d))
+* working rc.d wagtail w/ restart ([2cd3c0f](https://github.com/hanzxtf/hanz.jsmx.org/commit/2cd3c0fd75282219947ffaa1e3d5f6f49619557a))
+
+
+### Bug Fixes
+
+* color aesthetics ([9302518](https://github.com/hanzxtf/hanz.jsmx.org/commit/9302518a3d36f14b076b5775a0e96c1c987627af))
+* resource showcase page template ([78d7112](https://github.com/hanzxtf/hanz.jsmx.org/commit/78d7112cfaa6aea597eab7fe1626754ee30b38f3))
+* rm just from prod mise; use pkg instead ([01b3418](https://github.com/hanzxtf/hanz.jsmx.org/commit/01b3418f51a9e7e50c3ecac7e757061141f36be8))
+* rm not req env ([034bb6d](https://github.com/hanzxtf/hanz.jsmx.org/commit/034bb6d80f1395ebeb1d7f9ea3ad2ddc914d028a))
+* rm restart on pf to prevent cxn drop ([c967463](https://github.com/hanzxtf/hanz.jsmx.org/commit/c96746398f34eb4d8811bd509567670f006dd621))
+* sort order showcase ([06c0c5f](https://github.com/hanzxtf/hanz.jsmx.org/commit/06c0c5ff163cb8a0fc2236f5e07531abb39766c6))
+* start error --&gt; restart ([a1210de](https://github.com/hanzxtf/hanz.jsmx.org/commit/a1210de242b292efaf4ea5d050e895740b04268e))
+* sub color on res showcase ([58aa490](https://github.com/hanzxtf/hanz.jsmx.org/commit/58aa490c463ead34128e20273d6a8d3fb3f1229d))
+* use 2 workers instead of 3 ([d63b548](https://github.com/hanzxtf/hanz.jsmx.org/commit/d63b54874394fa30df438bc6b492f7127344267d))
+* use python@3.12.11 ([74c0b3f](https://github.com/hanzxtf/hanz.jsmx.org/commit/74c0b3f860311c500312afce05064de7c10f1f64))
+* uv sync ([4e944c6](https://github.com/hanzxtf/hanz.jsmx.org/commit/4e944c62f9ef472542f2d3bd37c5f30498542320))
+
 ## [0.2.2](https://github.com/junoxlabs/wagtail-starter-kit/compare/v0.2.1...v0.2.2) (2025-10-09)
 
 
