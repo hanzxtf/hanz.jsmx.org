@@ -9,31 +9,31 @@ from .models import Menu
 
 class MenuAdmin(SnippetViewSet):
     model = Menu
-    
+
     # Add search fields for better admin experience
     search_fields = ["title", "slug"]
-    
+
     # Add list display for better overview
     list_display = ["title", "slug"]
-    
+
     panels = [
         FieldPanel("title"),
         FieldPanel("slug"),
         InlinePanel("menu_items", heading="Menu Items", label="Menu Item"),
     ]
-    
+
     @property
     def icon(self):
         return "bars"
-    
+
     @property
     def menu_label(self):
         return "Navigation Menus"
-    
+
     @property
     def menu_name(self):
         return "navigation_menus"
-    
+
     @property
     def menu_order(self):
         return 100

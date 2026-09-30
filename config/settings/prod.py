@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 
 from .base import *  # noqa: F401, F403
-from .base import env, environ
+from .base import DATABASES, STORAGES, env, environ
 
 environ.Env.read_env("/usr/local/etc/wagtail/env")
 
@@ -9,9 +9,7 @@ environ.Env.read_env("/usr/local/etc/wagtail/env")
 def _required(name, minimum_length=None):
     value = env(name, default="")
     if not value:
-        raise ImproperlyConfigured(
-            f"{name} must be set in /usr/local/etc/wagtail/env"
-        )
+        raise ImproperlyConfigured(f"{name} must be set in /usr/local/etc/wagtail/env")
     if minimum_length and len(value) < minimum_length:
         raise ImproperlyConfigured(
             f"{name} must be at least {minimum_length} characters long"

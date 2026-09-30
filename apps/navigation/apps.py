@@ -12,7 +12,7 @@ class NavigationConfig(AppConfig):
 
     def ready(self):
         super().ready()
-        
+
         # Import signal handlers
         from django.db.models.signals import post_migrate
         from django.dispatch import receiver
@@ -26,7 +26,7 @@ class NavigationConfig(AppConfig):
         """Create default menus after the app is loaded."""
         try:
             from .models import Menu
-            
+
             # Use transaction to ensure atomicity
             with transaction.atomic():
                 # Create main menu if it doesn't exist
@@ -43,10 +43,16 @@ class NavigationConfig(AppConfig):
                 Menu.objects.get_or_create(
                     slug="legal-menu", defaults={"title": "Legal Menu"}
                 )
-                
+
                 # Clear cache for menus since we've created new ones
-                cache.delete_many(["menu_tree_main-menu", "menu_tree_footer-menu", "menu_tree_legal-menu"])
-                
+                cache.delete_many(
+                    [
+                        "menu_tree_main-menu",
+                        "menu_tree_footer-menu",
+                        "menu_tree_legal-menu",
+                    ]
+                )
+
         except Exception as e:
             # If there's an issue with the database (e.g., not migrated yet),
             # we skip creating the default menus. They will be created later.

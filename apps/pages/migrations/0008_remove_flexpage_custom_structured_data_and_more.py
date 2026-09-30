@@ -4,30 +4,29 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pages', '0007_alter_portfolioshowcaseitem_options_and_more'),
+        ("pages", "0007_alter_portfolioshowcaseitem_options_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='flexpage',
-            name='custom_structured_data',
+            model_name="flexpage",
+            name="custom_structured_data",
         ),
         migrations.RemoveField(
-            model_name='portfolioshowcasepage',
-            name='custom_structured_data',
+            model_name="portfolioshowcasepage",
+            name="custom_structured_data",
         ),
         migrations.RemoveField(
-            model_name='projectshowcasepage',
-            name='custom_structured_data',
+            model_name="projectshowcasepage",
+            name="custom_structured_data",
         ),
         migrations.RemoveField(
-            model_name='resourceshowcasepage',
-            name='custom_structured_data',
+            model_name="resourceshowcasepage",
+            name="custom_structured_data",
         ),
         migrations.RemoveField(
-            model_name='serviceshowcasepage',
-            name='custom_structured_data',
+            model_name="serviceshowcasepage",
+            name="custom_structured_data",
         ),
     ]

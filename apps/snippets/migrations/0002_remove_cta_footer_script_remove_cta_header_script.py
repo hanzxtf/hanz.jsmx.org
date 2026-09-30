@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('snippets', '0001_initial'),
+        ("snippets", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='cta',
-            name='footer_script',
+            model_name="cta",
+            name="footer_script",
         ),
         migrations.RemoveField(
-            model_name='cta',
-            name='header_script',
+            model_name="cta",
+            name="header_script",
         ),
     ]

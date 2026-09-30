@@ -1,7 +1,6 @@
 from django.db import models
 
 from wagtail.admin.panels import FieldPanel
-from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 
 
@@ -75,13 +74,13 @@ class Faq(models.Model):
 
     question = models.CharField(max_length=255, help_text="The question.")
     answer = models.TextField(help_text="The answer.")
-    
+
     CATEGORY_CHOICES = [
         ("general", "General"),
         ("pricing", "Pricing"),
         ("technical", "Technical"),
     ]
-    
+
     category = models.CharField(
         max_length=20,
         choices=CATEGORY_CHOICES,
@@ -108,12 +107,12 @@ class Cta(models.Model):
     """
     A reusable call-to-action snippet.
     """
-    
+
     title = models.CharField(max_length=256, help_text="The title of the Cta.")
     description = models.TextField(help_text="A brief description for the Cta.")
     button_text = models.CharField(max_length=256, help_text="Text for the button.")
     button_url = models.URLField(help_text="URL for the button.")
-    
+
     style = models.CharField(
         max_length=50,
         choices=[
@@ -126,7 +125,7 @@ class Cta(models.Model):
         default="primary",
         help_text="Style variant for the Cta",
     )
-    
+
     panels = [
         FieldPanel("title"),
         FieldPanel("description"),
@@ -134,12 +133,10 @@ class Cta(models.Model):
         FieldPanel("button_url"),
         FieldPanel("style"),
     ]
-    
+
     def __str__(self):
         return self.title
-    
+
     class Meta:
         verbose_name = "Reusable CTA"
         verbose_name_plural = "Reusable CTAs"
-
-

@@ -199,8 +199,15 @@ vite-build:
 clean:
 	rm -rf .venv frontend/dist frontend/node_modules
 
+pre-commit-install:
+	uv run pre-commit install
+
+lint:
+	uv run ruff check .
+	uv run ruff format --check .
+
 [parallel]
-install: vite-install django-install
+install: vite-install django-install pre-commit-install
 
 [parallel]
 dev: django-dev vite-dev

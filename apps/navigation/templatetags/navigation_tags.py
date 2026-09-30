@@ -16,18 +16,17 @@ def get_menu_tree(slug):
     # Try to get from cache first
     cache_key = f"menu_tree_{slug}"
     cached_result = cache.get(cache_key)
-    
+
     if cached_result is not None:
         return cached_result
-    
+
     try:
         # Get menu with prefetched items
         menu = Menu.objects.prefetch_related(
-            'menu_items__link_page',
-            'menu_items__children__link_page'
+            "menu_items__link_page", "menu_items__children__link_page"
         ).get(slug=slug)
         result = menu.get_menu_tree()
-        
+
         # Cache for 15 minutes (adjust as needed)
         cache.set(cache_key, result, 900)
         return result
