@@ -39,7 +39,17 @@ def test_env_example_documents_the_required_settings():
         "WAGTAILADMIN_BASE_URL",
         "DATABASE_PATH",
         "LITESTREAM_PATH",
+        "DEFAULT_FROM_EMAIL",
+        "EMAIL_HOST",
+        "EMAIL_PORT",
     ]:
         assert re.search(
             rf"^{name}=", text, re.M
         ), f"{name} is required by the settings but missing from .env.prod.example"
+
+
+def test_the_deployment_does_not_use_the_local_smoke_settings():
+    """local_prod relaxes the TLS redirect, so it must never reach the server."""
+    for path in (BASE_DIR / "prod").rglob("*"):
+        if path.is_file():
+            assert "local_prod" not in path.read_text(errors="ignore"), path

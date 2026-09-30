@@ -202,6 +202,10 @@ STORAGES = {
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
+# Serve uploaded media from this process. Off in production, where the object
+# store or nginx serves it; config/settings/local_prod.py turns it on.
+SERVE_MEDIA = False
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

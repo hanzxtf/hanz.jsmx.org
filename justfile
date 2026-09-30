@@ -205,7 +205,7 @@ vite-build:
     cd frontend && pnpm run build
 
 clean:
-    rm -rf .venv frontend/dist frontend/node_modules
+    rm -rf .venv frontend/dist frontend/node_modules staticfiles
 
 pre-commit-install:
     uv run pre-commit install
@@ -217,6 +217,52 @@ lint:
 # run the test suite (pytest builds its own throwaway database)
 test:
     uv run pytest
+
+################################################################################
+# ---- PROD, ON THIS MACHINE ---- #
+################################################################################
+
+# check the production configuration here: static files, deploy checks, migrations
+local-prod-check:
+    #!/usr/bin/env sh
+    set -eu
+    rm -rf /tmp/wagtail-local-prod-check && mkdir -p /tmp/wagtail-local-prod-check
+    export DJANGO_SETTINGS_MODULE=config.settings.prod
+    export SECRET_KEY="$(uv run python -c 'import secrets; print(secrets.token_urlsafe(64))')"
+    export DJANGO_DEBUG=false
+    export ALLOWED_HOSTS=hanz.jsmx.org
+    export CSRF_TRUSTED_ORIGINS=https://hanz.jsmx.org
+    export WAGTAILADMIN_BASE_URL=https://hanz.jsmx.org
+    export WAGTAIL_SITE_NAME="Haniel Eldrid"
+    export DATABASE_PATH=/tmp/wagtail-local-prod-check/database.db
+
+    # django-vite reads the manifest from STATIC_ROOT, so this runs first, as it
+    # does on the server (just setup-staticfiles before just prod-start)
+    echo "== static files collect from the committed build =="
+    uv run manage.py collectstatic --no-input --clear
+
+    echo "== django deployment checks =="
+    uv run manage.py check --deploy --fail-level WARNING
+
+    echo "== migrations apply on an empty database =="
+    uv run manage.py migrate --no-input
+    uv run manage.py makemigrations --check --dry-run
+
+    echo "local-prod-check passed"
+
+# serve the production configuration here on :8001 with sample content
+local-prod-smoke:
+    #!/usr/bin/env sh
+    set -eu
+    rm -rf /tmp/wagtail-local-prod-smoke && mkdir -p /tmp/wagtail-local-prod-smoke
+    export DJANGO_SETTINGS_MODULE=config.settings.local_prod
+
+    uv run manage.py collectstatic --no-input --clear
+    uv run manage.py migrate --no-input
+    uv run manage.py seed_demo
+
+    echo "prod-mode server on http://127.0.0.1:8001 (Ctrl-C to stop)"
+    uv run uvicorn config.asgi:application --workers 1 --host 127.0.0.1 --port 8001
 
 [parallel]
 install: vite-install django-install pre-commit-install

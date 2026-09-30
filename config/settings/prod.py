@@ -67,6 +67,12 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
+# SECURE_HSTS_PRELOAD is deliberately off: it is hard to undo, and it should only
+# be turned on once the domain is confirmed ready. Silencing it here keeps
+# `manage.py check --deploy --fail-level WARNING` (just local-prod-check) a real
+# gate: any other deployment warning fails it.
+SILENCED_SYSTEM_CHECKS = ["security.W021"]
+
 # Django-Vite Settings
 # ------------------------------------------------------------------------------
 DJANGO_VITE = {

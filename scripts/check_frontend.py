@@ -14,9 +14,15 @@ Then (the first run downloads Chromium, ~115MB):
     uv run --with playwright playwright install chromium
     uv run --with playwright python scripts/check_frontend.py
 
+Point it at another origin with CHECK_BASE_URL, for example the production
+configuration served locally by `just prod-smoke`:
+
+    CHECK_BASE_URL=http://127.0.0.1:8001 uv run --with playwright python scripts/check_frontend.py
+
 Exits non-zero if any check fails.
 """
 
+import os
 import re
 import sys
 
@@ -27,7 +33,7 @@ except ImportError:  # pragma: no cover - depends on how the script is run
         "Playwright missing. Run: uv run --with playwright python scripts/check_frontend.py"
     )
 
-BASE = "http://127.0.0.1:8000"
+BASE = os.environ.get("CHECK_BASE_URL", "http://127.0.0.1:8000")
 failures = []
 
 

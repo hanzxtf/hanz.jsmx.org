@@ -166,6 +166,28 @@ uv run --with playwright python scripts/check_frontend.py
 Run `just lint` and `just test` before committing (the pre-commit hook also
 runs ruff automatically).
 
+### Testing production locally
+
+`just local-prod-check` runs the production configuration on this machine against
+throwaway paths: it collects static files from the committed build (django-vite
+reads the manifest from `STATIC_ROOT`, so this runs first, as it does on the
+server), runs Django's deployment checks with warnings treated as failures,
+applies every migration to an empty database, and checks that none is missing.
+
+`just local-prod-smoke` serves the same configuration on
+<http://127.0.0.1:8001> with sample content, so you can click through the built
+assets instead of the dev server: no HMR, no `dev.js`, WhiteNoise serving static
+files, media from disk, `DEBUG` off. The browser check takes any origin:
+
+```sh
+just local-prod-smoke   # leave it running
+CHECK_BASE_URL=http://127.0.0.1:8001 uv run --with playwright python scripts/check_frontend.py
+```
+
+Both recipes use `config/settings/local_prod.py`: the production settings with the
+server-only pieces relaxed (no TLS redirect or secure cookies, media on disk,
+database under `/tmp`). The deployment never uses it.
+
 ### Cleaning up
 
 `just unseed` removes the sample content but keeps the site, its users and your
