@@ -14,13 +14,14 @@ prod-setup:
     just setup-pf
 
 prod-post-setup:
+    just prod-vite-build
     just setup-staticfiles
     just litestream-restore
     just setup-db
     just prod-start
 
 freebsd-setup-pkgs:
-    pkg install --yes git nginx litestream go-anubis just python311 py311-uvicorn py311-uvloop py311-pillow py311-pillow-heif py311-granian py311-sqlite3 py311-pip
+    pkg install --yes git nginx litestream go-anubis just python311 py311-uvicorn py311-uvloop py311-pillow py311-sqlite3 py311-pip
 
 freebsd-nginx-configure:
     # enable nginx
@@ -143,6 +144,10 @@ setup-pf:
 
 setup-cron:
     sh $(pwd)/prod/freebsd/scripts/setup-cron.sh
+
+# frontend build output (frontend/dist) is not tracked, so build it before collectstatic
+prod-vite-build:
+    CMD="cd frontend && pnpm install --frozen-lockfile && pnpm run build" just run-www
 
 setup-staticfiles:
 	CMD="$VENV_PY manage.py collectstatic --no-input --clear" just run-www

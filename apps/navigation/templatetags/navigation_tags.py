@@ -8,21 +8,6 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_menu(slug):
-    """
-    Returns a menu by slug with error handling.
-    """
-    try:
-        return Menu.objects.get(slug=slug)
-    except Menu.DoesNotExist:
-        logger.warning(f"Menu with slug '{slug}' does not exist")
-        return None
-    except Exception as e:
-        logger.error(f"Error retrieving menu with slug '{slug}': {str(e)}")
-        return None
-
-
-@register.simple_tag
 def get_menu_tree(slug):
     """
     Returns the complete menu tree with nested structure for the given slug.
@@ -52,27 +37,3 @@ def get_menu_tree(slug):
     except Exception as e:
         logger.error(f"Error retrieving menu tree for slug '{slug}': {str(e)}")
         return []
-
-
-@register.simple_tag
-def get_main_menu():
-    """
-    Convenience tag to get the main menu specifically.
-    """
-    return get_menu_tree('main-menu')
-
-
-@register.simple_tag
-def get_footer_menu():
-    """
-    Convenience tag to get the footer menu specifically.
-    """
-    return get_menu_tree('footer-menu')
-
-
-@register.simple_tag
-def get_legal_menu():
-    """
-    Convenience tag to get the legal menu specifically.
-    """
-    return get_menu_tree('legal-menu')

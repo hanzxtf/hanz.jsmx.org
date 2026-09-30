@@ -127,26 +127,12 @@ class Cta(models.Model):
         help_text="Style variant for the Cta",
     )
     
-    header_script = models.TextField(
-        blank=True,
-        null=True,
-        help_text="Additional script to inject in the header when this CTA is used."
-    )
-    
-    footer_script = models.TextField(
-        blank=True,
-        null=True,
-        help_text="Additional script to inject in the footer when this CTA is used."
-    )
-    
     panels = [
         FieldPanel("title"),
         FieldPanel("description"),
         FieldPanel("button_text"),
         FieldPanel("button_url"),
         FieldPanel("style"),
-        FieldPanel("header_script"),
-        FieldPanel("footer_script"),
     ]
     
     def __str__(self):
