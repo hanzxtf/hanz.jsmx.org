@@ -1,5 +1,77 @@
 # Changelog
 
+## 0.1.0 (2026-09-30)
+
+
+### Features
+
+* accept a hosted mail relay's credentials from the environment ([ee838bf](https://github.com/hanzxtf/hanz.jsmx.org/commit/ee838bf7114f8ecd4ac88de5deac10e101d674da))
+* add a sample site command and a sweep test over every page ([d1ce0b7](https://github.com/hanzxtf/hanz.jsmx.org/commit/d1ce0b7e2f92163da996dc68b8f3c852fdf16ca0))
+* add dev migration command and rename prod one ([acc070d](https://github.com/hanzxtf/hanz.jsmx.org/commit/acc070d5d11e4d3e8983d123d9e4b146fcf51a70))
+* add requirements.txt ([ec1c5c5](https://github.com/hanzxtf/hanz.jsmx.org/commit/ec1c5c511a4b2f4875e65d2e26d53366dcc9b04c))
+* add vite build assets as part of repo ([f7f78a5](https://github.com/hanzxtf/hanz.jsmx.org/commit/f7f78a5ceea7b98f9bd969e2c457fcd0c717011a))
+* cache - inmem; disable whitenoise on prod ([91fd30a](https://github.com/hanzxtf/hanz.jsmx.org/commit/91fd30ae86f3857f3ac9e44ae41c0f85e66c6513))
+* check and serve the production configuration locally ([532eb70](https://github.com/hanzxtf/hanz.jsmx.org/commit/532eb70f7068e25249c520cc064746535a10b3f1))
+* freebsd prod setup ([1f6e595](https://github.com/hanzxtf/hanz.jsmx.org/commit/1f6e5954261608ad628cfee9da77101457039dbd))
+* let operators confirm the server can send form notifications ([d9ccb26](https://github.com/hanzxtf/hanz.jsmx.org/commit/d9ccb26f134cfbc9caddc23d0a51adda1b17ca1f))
+* make the sample data reversible ([3ace3ed](https://github.com/hanzxtf/hanz.jsmx.org/commit/3ace3ed16202cac0a5d4cd95d0b94741b82ab795))
+* merge the head on boosted navigation ([ec03ce7](https://github.com/hanzxtf/hanz.jsmx.org/commit/ec03ce7c26f7b760930e77c992a4a04927f06ebf))
+* node 24, uv 0.11 ([ba8b824](https://github.com/hanzxtf/hanz.jsmx.org/commit/ba8b824111f22735c6e670786d79174cefb90c6f))
+* not using mise for deps on prod; fbsd ([5182dc1](https://github.com/hanzxtf/hanz.jsmx.org/commit/5182dc107871988302a5a5fe0216fbd112d0af63))
+* optimize cache ([c5aaf6d](https://github.com/hanzxtf/hanz.jsmx.org/commit/c5aaf6d868d7c546edac849e02eb964eb8e34722))
+* prod almost ready ([ff3d15f](https://github.com/hanzxtf/hanz.jsmx.org/commit/ff3d15fcb310c875577892530ad593b4b8fc736a))
+* refactor + optimize nginx ([684b33e](https://github.com/hanzxtf/hanz.jsmx.org/commit/684b33eae81d4573f7f848c6f003e4e843e08715))
+* revamp prod, dev settings ([686b1ae](https://github.com/hanzxtf/hanz.jsmx.org/commit/686b1aea74e2b8781c72616790b38ae278ceab48))
+* update theme ([c5fdc2f](https://github.com/hanzxtf/hanz.jsmx.org/commit/c5fdc2f55182fca64d0b831107739ace3aa3e1e0))
+* upgrade django wagtail lts ([b1732ac](https://github.com/hanzxtf/hanz.jsmx.org/commit/b1732ac3c2c1c888fa39a4f8da32e7830a8b4e08))
+* upgrade django, wagtail LTS ([b1732ac](https://github.com/hanzxtf/hanz.jsmx.org/commit/b1732ac3c2c1c888fa39a4f8da32e7830a8b4e08))
+* upgrade pkgs ([80db6b3](https://github.com/hanzxtf/hanz.jsmx.org/commit/80db6b31aaa74e6bcf6660542b39653b0921a3fa))
+* upgraded requirements.txt for prod ([7947f05](https://github.com/hanzxtf/hanz.jsmx.org/commit/7947f05752875e5158cd54e81160f42ded64d213))
+* use mise prod/dev ([62ab1dd](https://github.com/hanzxtf/hanz.jsmx.org/commit/62ab1dde6ef38edd3712b978847211fc083eecce))
+* use node 22 + pnpm 10 over bun ([5762f7c](https://github.com/hanzxtf/hanz.jsmx.org/commit/5762f7c48e954a56db4bca71568dc4783688a280))
+* use python 3.11 for fbsd ([3cea5cf](https://github.com/hanzxtf/hanz.jsmx.org/commit/3cea5cf60a8c9dd81a834a3539652b09a4ea03d5))
+* use uvicorn ([465d738](https://github.com/hanzxtf/hanz.jsmx.org/commit/465d73866ce4e996f8983b5f44a3f56c0b862e20))
+* use wrk2 to bench rps/latency ([8dcb4c6](https://github.com/hanzxtf/hanz.jsmx.org/commit/8dcb4c690bdb24c51a73b513fed9c0d227e99f8d))
+* working rc.d wagtail w/ restart ([2cd3c0f](https://github.com/hanzxtf/hanz.jsmx.org/commit/2cd3c0fd75282219947ffaa1e3d5f6f49619557a))
+
+
+### Bug Fixes
+
+* actually email form submissions and drop the broken form view ([bd60649](https://github.com/hanzxtf/hanz.jsmx.org/commit/bd606495af7ff5d2a572c9ee33050e22a06e9c89))
+* color aesthetics ([9302518](https://github.com/hanzxtf/hanz.jsmx.org/commit/9302518a3d36f14b076b5775a0e96c1c987627af))
+* keep a form submission working when mail is unreachable ([1d6d566](https://github.com/hanzxtf/hanz.jsmx.org/commit/1d6d5668577ff96f663c04e64e435f6a8b4c38e1))
+* keep a running dev server in step with seeded content ([e30531b](https://github.com/hanzxtf/hanz.jsmx.org/commit/e30531bb89e1b61628ee4a6d030371b8ae55183d))
+* keep the search term in pagination links ([319896d](https://github.com/hanzxtf/hanz.jsmx.org/commit/319896dbeffa7acd5917fd96291106d660ac8263))
+* make site search return results instead of a 500 ([27b017f](https://github.com/hanzxtf/hanz.jsmx.org/commit/27b017f2dc2f620f2d105b4ebe3d8b77241fabf8))
+* render team member and CTA snippet blocks instead of crashing ([9a9a528](https://github.com/hanzxtf/hanz.jsmx.org/commit/9a9a5285bfc68d0694f37fe213fe60871af908fc))
+* replicate the database every ten seconds and pin prod to the lock ([6fe2c7a](https://github.com/hanzxtf/hanz.jsmx.org/commit/6fe2c7a91ee9f8b26acd0d650e55bb06c97579ab))
+* resource showcase page template ([78d7112](https://github.com/hanzxtf/hanz.jsmx.org/commit/78d7112cfaa6aea597eab7fe1626754ee30b38f3))
+* rm just from prod mise; use pkg instead ([01b3418](https://github.com/hanzxtf/hanz.jsmx.org/commit/01b3418f51a9e7e50c3ecac7e757061141f36be8))
+* rm not req env ([034bb6d](https://github.com/hanzxtf/hanz.jsmx.org/commit/034bb6d80f1395ebeb1d7f9ea3ad2ddc914d028a))
+* rm restart on pf to prevent cxn drop ([c967463](https://github.com/hanzxtf/hanz.jsmx.org/commit/c96746398f34eb4d8811bd509567670f006dd621))
+* serve edited menus immediately and register navigation once ([3c1ab57](https://github.com/hanzxtf/hanz.jsmx.org/commit/3c1ab57a7a8c8c253ac491517fd9bd57f7dd92d9))
+* serve entity pages at their slug instead of raising on every URL ([6f6278b](https://github.com/hanzxtf/hanz.jsmx.org/commit/6f6278b740867d1f0e1c342fe1c4aa563953584c))
+* sort order showcase ([06c0c5f](https://github.com/hanzxtf/hanz.jsmx.org/commit/06c0c5ff163cb8a0fc2236f5e07531abb39766c6))
+* start error --&gt; restart ([a1210de](https://github.com/hanzxtf/hanz.jsmx.org/commit/a1210de242b292efaf4ea5d050e895740b04268e))
+* stop boosted navigation from stripping the page's styling ([4114e13](https://github.com/hanzxtf/hanz.jsmx.org/commit/4114e13acf1a2719b3508a45633466c927dcbb54))
+* stop production from running on placeholder secrets and wildcard hosts ([927fc4a](https://github.com/hanzxtf/hanz.jsmx.org/commit/927fc4ada4086f4f848e0cb519632db6bd0b2132))
+* sub color on res showcase ([58aa490](https://github.com/hanzxtf/hanz.jsmx.org/commit/58aa490c463ead34128e20273d6a8d3fb3f1229d))
+* use 2 workers instead of 3 ([d63b548](https://github.com/hanzxtf/hanz.jsmx.org/commit/d63b54874394fa30df438bc6b492f7127344267d))
+* use python@3.12.11 ([74c0b3f](https://github.com/hanzxtf/hanz.jsmx.org/commit/74c0b3f860311c500312afce05064de7c10f1f64))
+* uv sync ([4e944c6](https://github.com/hanzxtf/hanz.jsmx.org/commit/4e944c62f9ef472542f2d3bd37c5f30498542320))
+
+
+### Reverts
+
+* keep the committed frontend build ([dd95f21](https://github.com/hanzxtf/hanz.jsmx.org/commit/dd95f21d130623f9ea56af45ba2d88e0cbbda245))
+
+
+### Documentation
+
+* explain the Dark Reader console error in development ([23eb2bd](https://github.com/hanzxtf/hanz.jsmx.org/commit/23eb2bd6bc7adb6dd226d4b16d39141f89476328))
+* give the test suite an entry point ([cc44c6c](https://github.com/hanzxtf/hanz.jsmx.org/commit/cc44c6c12078c96ce0b8834ea36627e4dd435e21))
+* tell the operator which production settings are required ([e19ed5e](https://github.com/hanzxtf/hanz.jsmx.org/commit/e19ed5edcfb436acda0709fc269d9487fcb5a2be))
+
 ## [0.2.2](https://github.com/junoxlabs/wagtail-starter-kit/compare/v0.2.1...v0.2.2) (2025-10-09)
 
 
