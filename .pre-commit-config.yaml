@@ -3,8 +3,11 @@ repos:
     rev: v4.6.0
     hooks:
     -   id: check-yaml
+    # frontend/dist is build output: Vite writes it, and we commit it as-is
     -   id: end-of-file-fixer
+        exclude: ^frontend/dist/
     -   id: trailing-whitespace
+        exclude: ^frontend/dist/
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.0
     hooks:
