@@ -180,6 +180,16 @@ everything else in it).
 The browser check downloads Chromium into `~/.cache/ms-playwright`; delete that
 directory if you no longer want it.
 
+### Known console noise
+
+With the Dark Reader extension enabled, the dev server logs
+`Uncaught HierarchyRequestError: Failed to execute 'insertRule' on
+'CSSStyleRule'` from the extension's own `index.js` whenever Vite re-injects the
+stylesheet. Dark Reader rebuilds the page's CSS rule by rule, Tailwind v4 emits
+nested rules, and Chromium refuses to nest a rule inside one of those. The page
+itself is unaffected (a clean browser logs nothing), so ignore it or disable the
+extension for `localhost`.
+
 
 ## Production
 
