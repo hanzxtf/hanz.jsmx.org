@@ -154,6 +154,10 @@ setup-db:
 prod-migrate:
     CMD="$VENV_PY manage.py migrate" just run-www
 
+# prove the mail relay works: just prod-mail-check you@example.com
+prod-mail-check to:
+    CMD="$VENV_PY manage.py sendtestemail {{to}}" just run-www
+
 prod-start:
     service litestream restart || service litestream start
     service wagtail restart || service wagtail start

@@ -131,7 +131,17 @@ back at this file.
 | `EMAIL_HOST` / `EMAIL_PORT` | the relay this server can reach; a local MTA on port 25 is fine |
 
 If mail fails, the submission is still stored and the error is logged, so a mail
-outage never turns a visitor's submission into an error page.
+outage never turns a visitor's submission into an error page. That also means a
+relay that was never reachable fails silently, so check it once after deploying:
+
+```
+just prod-mail-check you@example.com
+```
+
+A local MTA on port 25 accepts the message; whether it is delivered depends on
+the server's own outbound mail and DNS records. For guaranteed delivery point
+`EMAIL_HOST` at a real relay and fill in `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`
+and `EMAIL_USE_TLS=true`.
 
 Then install it where the rc.d service reads it (`root:www`, mode 640):
 
