@@ -40,13 +40,12 @@ INSTALLED_APPS = [
     "wagtail.snippets",
     "wagtail.documents",
     "wagtail.images",
-    # "wagtail.search",
+    "wagtail.search",
     "wagtail.admin",
     "wagtail",
     # Optional Wagtail apps
     "wagtail.contrib.routable_page",
     "wagtail.contrib.settings",
-    # "wagtail.contrib.search_promotions",
     # Third-party apps
     "taggit",
     "modelcluster",
