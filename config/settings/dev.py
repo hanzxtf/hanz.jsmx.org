@@ -35,6 +35,12 @@ DJANGO_VITE = {
 # Disable wagtail cache in development
 WAGTAIL_CACHE = False
 
+# Cache nothing in development: the menu tree is cached for 15 minutes, and a
+# long-running dev server would keep serving a stale tree after `just seed`.
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
+}
+
 # Print form notification emails to the console instead of sending them
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 

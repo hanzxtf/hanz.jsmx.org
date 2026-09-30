@@ -3,6 +3,7 @@
 import re
 
 import pytest
+from django.conf import settings
 from django.core import mail
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -59,6 +60,12 @@ def test_seed_demo_is_idempotent(seeded_home):
 
     assert Page.objects.count() == before
     assert Page.objects.live().count() == before
+
+
+def test_development_does_not_cache_pages_or_menus():
+    """Seeding has to be visible without restarting a running dev server."""
+    assert settings.CACHES["default"]["BACKEND"].endswith("DummyCache")
+    assert settings.WAGTAIL_CACHE is False
 
 
 @pytest.mark.django_db

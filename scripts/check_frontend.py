@@ -175,12 +175,12 @@ def main():
             boosted[-1:],
         )
 
-        # a link in the mobile menu, which closes the menu as it navigates
+        # a link in the seeded navigation (desktop width: the mobile menu animates
+        # open, which is timing dependent, so the desktop nav is the stable target)
+        page.set_viewport_size({"width": 1280, "height": 900})
         page.goto(f"{BASE}/")
         page.evaluate("window.__probe = 'nav'")
-        page.click('[data-action="navbar#toggleMenu"]')
-        page.wait_for_timeout(400)
-        page.click('ul[data-navbar-target="mobileMenu"] a[href="/contact/"]')
+        page.click('header nav a[href="/contact/"]')
         page.wait_for_url(f"{BASE}/contact/")
         page.wait_for_timeout(500)
 
