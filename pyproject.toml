@@ -36,4 +36,9 @@ DJANGO_SETTINGS_MODULE = "config.settings.dev"
 pythonpath = ["."]
 testpaths = ["tests"]
 # the suite runs clean; a new warning should fail rather than pile up
-filterwarnings = ["error"]
+filterwarnings = [
+  "error",
+  # Wagtail builds a rendition by handing Pillow a spooled temp file, which Pillow
+  # leaves to the garbage collector. That resource warning is third-party noise.
+  "ignore:.*SpooledTemporaryFile.*:pytest.PytestUnraisableExceptionWarning",
+]

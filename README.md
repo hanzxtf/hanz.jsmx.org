@@ -20,7 +20,7 @@ A modern, flexible foundation for building high-performance marketing websites w
 ```
 ├── apps/
 │   ├── blocks/                     # Custom StreamField blocks
-│   ├── core/                       # Base models and utilities
+│   ├── core/                       # Base models, utilities and the sample-data command
 │   ├── pages/                      # Page models and templates
 │   ├── navigation/                 # Navigation menu snippets
 │   ├── search/                     # Site search functionality
@@ -34,7 +34,6 @@ A modern, flexible foundation for building high-performance marketing websites w
 │   │   ├── app/                    # JavaScript application code
 │   │   │   ├── main.js             # Main JavaScript entry point
 │   │   │   └── controllers/        # Stimulus controllers
-│   │   │       ├── form.js
 │   │   │       └── navbar.js
 │   │   └── css/                    # CSS source files
 │   │       └── styles.css
@@ -43,6 +42,7 @@ A modern, flexible foundation for building high-performance marketing websites w
 │   └── pnpm-lock.yaml              # pnpm lock file
 ├── prod/                           # Production configuration
 │   └── freebsd/                    # nginx, litestream, pf, rc.d, deploy scripts
+├── scripts/                        # Optional checks that need a real browser
 ├── templates/                      # Django templates
 │   ├── pages/                      # Page-specific templates
 │   ├── blocks/                     # StreamField block templates
@@ -100,11 +100,23 @@ The database is a SQLite file at `db/database.db`; media files live on disk.
 - `just django-dev` / `just vite-dev` - Run one of them alone
 - `just dev-migrate` - Apply database migrations
 - `just makemigrations` - Create new migrations
+- `just seed` - Build the sample site in the development database
 - `just vite-build` - Build frontend assets (commit the result, the server never runs pnpm)
 - `just lint` - Check formatting and unused imports
 - `just test` - Run the test suite
 - `just install` - Sync Python and frontend dependencies and install the pre-commit hooks
 - `uv run manage.py createsuperuser` - Create an admin user
+
+### Sample data
+
+`just seed` (`manage.py seed_demo`) builds a site you can click through: a home
+page using every block type, a flex page, a showcase with sections, items and
+links, project / service / portfolio pages, a contact form, both menus and the
+site settings. It is idempotent, so run it again after a `git pull`. It replaces
+Wagtail's placeholder home page, but only while that page has no children.
+
+The test suite builds the same content, so the sample site is exercised on
+every run (`tests/test_sample_site.py`).
 
 ### Tests
 
@@ -121,11 +133,22 @@ uv run pytest tests/test_search.py -k pagination
 ```
 
 What the suite covers: every template compiles; models match the migrations;
-the homepage, search page and search results render; entity pages are served at
-their slug; forms store a submission and email it; menu edits are visible
-immediately; showcase pages render sections, items and links; production
-settings refuse insecure configuration; `requirements.txt` matches `uv.lock`;
-and the Litestream configuration stays durable.
+the sample site is crawled page by page and every block, menu and showcase item
+renders; the contact form validates, stores and emails a submission; search
+finds seeded pages; entity pages are served at their slug; menu edits are
+visible immediately; the frontend interactivity stack is htmx 4 throughout;
+production settings refuse insecure configuration; `requirements.txt` matches
+`uv.lock`; and the Litestream configuration stays durable.
+
+The one thing a pytest run cannot prove is that the JavaScript actually drives
+the browser. `scripts/check_frontend.py` checks that in a real browser (htmx
+boosted navigation, AJAX form posts, Stimulus reconnecting after a swap). With
+`just django-dev` and `just seed` already done:
+
+```sh
+uv run --with playwright playwright install chromium
+uv run --with playwright python scripts/check_frontend.py
+```
 
 Run `just lint` and `just test` before committing (the pre-commit hook also
 runs ruff automatically).

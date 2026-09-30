@@ -190,6 +190,10 @@ makemigrations:
 dev-migrate:
     uv run manage.py migrate
 
+# build the sample site in the development database (safe to re-run)
+seed:
+    uv run manage.py seed_demo
+
 vite-dev:
     cd frontend && pnpm run dev
 
