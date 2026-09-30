@@ -180,15 +180,35 @@ def main():
         page.set_viewport_size({"width": 1280, "height": 900})
         page.goto(f"{BASE}/")
         page.evaluate("window.__probe = 'nav'")
+        page.evaluate("window.scrollTo(0, 800)")
+        page.wait_for_timeout(200)
+        styles_before = page.evaluate("document.querySelectorAll('head style').length")
+
         page.click('header nav a[href="/contact/"]')
         page.wait_for_url(f"{BASE}/contact/")
-        page.wait_for_timeout(500)
+        page.wait_for_timeout(800)
 
         check("menu link navigated over AJAX", page.evaluate("window.__probe") == "nav")
         check(
             "menu link rendered the contact page",
             page.query_selector('form[action="/contact/"] input[name="name"]')
             is not None,
+        )
+        check(
+            "the swap scrolled back to the top",
+            page.evaluate("window.scrollY") == 0,
+            page.evaluate("window.scrollY"),
+        )
+        check(
+            "the swap kept the page's styling",
+            page.evaluate("document.querySelectorAll('head style').length")
+            == styles_before
+            and "Times New Roman"
+            not in page.evaluate("getComputedStyle(document.body).fontFamily"),
+            page.evaluate(
+                "() => [document.querySelectorAll('head style').length, "
+                "getComputedStyle(document.body).fontFamily]"
+            ),
         )
 
         # the head merge replaces stale tags instead of accumulating them

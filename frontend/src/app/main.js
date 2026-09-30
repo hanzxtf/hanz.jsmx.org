@@ -16,6 +16,16 @@ import "htmx.org/dist/ext/hx-head.js";
 // Import Stimulus
 import { Application } from "@hotwired/stimulus";
 
+// The head merge removes elements the new response does not contain. Vite
+// injects the stylesheet as a <style> tag that only ever exists in the browser,
+// so without this every boosted navigation strips the page's styling and the
+// layout collapses. Stylesheets from the response still follow the response.
+document.addEventListener("htmx:head:before:remove", (event) => {
+  if (event.detail.headElement.tagName === "STYLE") {
+    event.preventDefault();
+  }
+});
+
 // start Stimulus application
 const app = Application.start();
 
