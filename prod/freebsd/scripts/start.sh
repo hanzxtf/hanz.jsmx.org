@@ -48,4 +48,4 @@ exec "$VENV/bin/python" -m uvicorn config.asgi:application \
     --limit-concurrency 128 \
     --timeout-keep-alive 128 \
     --backlog 8192 \
-    --log-level warning 
+    --log-level warning

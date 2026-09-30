@@ -22,7 +22,7 @@ pw unlock www
 chsh -s /bin/sh www
 ```
 
-## set up deploy keys 
+## set up deploy keys
 
 as root.
 
@@ -87,7 +87,7 @@ fix ownerships:
 chown -R www:www /usr/local/www/wagtail
 ```
 
-## ssl certs 
+## ssl certs
 
 i use cloudflare origin certs with 15 year validity
 
@@ -103,4 +103,3 @@ chmod 644 /usr/local/etc/ssl/cf-origin.pem
 ```
 pkg install --yes nginx litestream just python311 uv
 ```
-
