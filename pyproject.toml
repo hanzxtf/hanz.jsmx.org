@@ -36,3 +36,5 @@ dev = [
 DJANGO_SETTINGS_MODULE = "config.settings.dev"
 pythonpath = ["."]
 testpaths = ["tests"]
+# the suite runs clean; a new warning should fail rather than pile up
+filterwarnings = ["error"]
