@@ -10,6 +10,9 @@ import { gsap } from "gsap";
 // Import htmx: boosted navigation and AJAX form submissions
 import "htmx.org";
 
+// Merge the <head> (title, meta, og tags) on boosted navigation
+import "htmx.org/dist/ext/hx-head.js";
+
 // Import Stimulus
 import { Application } from "@hotwired/stimulus";
 

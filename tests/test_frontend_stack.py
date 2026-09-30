@@ -76,3 +76,5 @@ def test_built_bundle_ships_htmx_and_not_turbo():
 
     assert "htmx" in bundle
     assert "turbo" not in bundle.lower()
+    # the head-merging extension has to survive bundling
+    assert "htmx:head:before:merge" in bundle
