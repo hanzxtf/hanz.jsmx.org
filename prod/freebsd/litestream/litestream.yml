@@ -7,9 +7,9 @@ dbs:
     replicas:
       - type: s3
         bucket: ${LITESTREAM_BUCKET}
-        path: database.db
+        path: ${LITESTREAM_PATH}
         region: ${LITESTREAM_REGION}
         endpoint: ${LITESTREAM_ENDPOINT_URL}
         force-path-style: ${LITESTREAM_FORCE_PATH_STYLE}
-        sync-interval: 1h
+        sync-interval: 10s
         snapshot-interval: 1h

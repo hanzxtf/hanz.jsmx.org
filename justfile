@@ -116,7 +116,7 @@ setup-mise:
 
 prepare-pip:
     uv lock
-    uv pip compile pyproject.toml > requirements.txt
+    uv export --no-dev --no-hashes --format requirements-txt -o requirements.txt
 setup-pip:
     CMD="[ -d .venv ] || python3.11 -m venv --system-site-packages .venv && .venv/bin/pip install -r requirements.txt" just run-www
 
