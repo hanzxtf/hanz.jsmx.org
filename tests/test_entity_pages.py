@@ -4,13 +4,13 @@ import pytest
 from django.test import Client
 from wagtail.models import Site
 
-from apps.pages.models import FlexPage, ProjectPage, ProjectShowcasePage
+from apps.pages.models import FlexPage, ProjectPage, ShowcasePage
 
 
 @pytest.fixture
 def project(db):
     home = Site.objects.get(is_default_site=True).root_page
-    showcase = ProjectShowcasePage(title="Work", slug="work")
+    showcase = ShowcasePage(title="Work", slug="work")
     home.add_child(instance=showcase)
     project = ProjectPage(title="Blue Whale", slug="blue-whale")
     showcase.add_child(instance=project)

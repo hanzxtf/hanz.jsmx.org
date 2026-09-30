@@ -97,7 +97,7 @@ class ProjectPage(BaseEntityPage):
 
     content_panels = BaseEntityPage.content_panels
 
-    parent_page_types = ["pages.ProjectShowcasePage"]
+    parent_page_types = ["pages.ShowcasePage"]
     subpage_types = ["pages.FlexPage"]
     template = "pages/project_page.html"
 
@@ -118,7 +118,7 @@ class ServicePage(BaseEntityPage):
         ]
     )
 
-    parent_page_types = ["pages.ServiceShowcasePage"]
+    parent_page_types = ["pages.ShowcasePage"]
     subpage_types = ["pages.FlexPage"]
     template = "pages/service_page.html"
 
@@ -148,7 +148,7 @@ class PortfolioItemPage(BaseEntityPage):
         FieldPanel("image"),
     ]
 
-    parent_page_types = ["pages.PortfolioShowcasePage"]
+    parent_page_types = ["pages.ShowcasePage"]
     subpage_types = ["pages.FlexPage"]
     template = "pages/portfolio_item_page.html"
 
@@ -157,10 +157,10 @@ class PortfolioItemPage(BaseEntityPage):
         verbose_name_plural = "Portfolio Item Pages"
 
 
-class AbstractShowcasePage(BasePage):
+class ShowcasePage(BasePage):
     """
-    Abstract base page for showcasing different types of entities.
-    Editors can create sections and explicitly assign items to each section.
+    A page that showcases a collection of entities, grouped into sections.
+    Editors assign items to each section explicitly.
     """
 
     # Introduction text for the page
@@ -168,115 +168,41 @@ class AbstractShowcasePage(BasePage):
         blank=True, help_text="Optional introduction text for the showcase page"
     )
 
-    class Meta:
-        abstract = True
-        verbose_name = "Abstract Showcase Page"
-        verbose_name_plural = "Abstract Showcase Pages"
-
-
-class ProjectShowcasePage(AbstractShowcasePage):
-    """
-    A page that showcases projects.
-    """
-
-    content_panels = AbstractShowcasePage.content_panels + [
+    content_panels = BasePage.content_panels + [
         FieldPanel("introduction"),
         InlinePanel(
-            "project_sections",
+            "showcase_sections",
             label="Sections",
             help_text="Add and order sections to display on this page",
         ),
     ]
 
-    template = "pages/project_showcase_page.html"
+    template = "pages/showcase_page.html"
     parent_page_types = ["wagtailcore.Page", "pages.FlexPage"]
-    subpage_types = ["pages.ProjectPage"]
-
-    class Meta:
-        verbose_name = "Project Showcase Page"
-        verbose_name_plural = "Project Showcase Pages"
-
-
-class ServiceShowcasePage(AbstractShowcasePage):
-    """
-    A page that showcases services.
-    """
-
-    content_panels = AbstractShowcasePage.content_panels + [
-        FieldPanel("introduction"),
-        InlinePanel(
-            "service_sections",
-            label="Sections",
-            help_text="Add and order sections to display on this page",
-        ),
+    subpage_types = [
+        "pages.ProjectPage",
+        "pages.ServicePage",
+        "pages.PortfolioItemPage",
     ]
 
-    template = "pages/service_showcase_page.html"
-    parent_page_types = ["wagtailcore.Page", "pages.FlexPage"]
-    subpage_types = ["pages.ServicePage"]
-
     class Meta:
-        verbose_name = "Service Showcase Page"
-        verbose_name_plural = "Service Showcase Pages"
+        verbose_name = "Showcase Page"
+        verbose_name_plural = "Showcase Pages"
 
 
-class PortfolioShowcasePage(AbstractShowcasePage):
+class ShowcaseSection(ClusterableModel, Orderable):
     """
-    A page that showcases portfolio items.
-    """
-
-    content_panels = AbstractShowcasePage.content_panels + [
-        FieldPanel("introduction"),
-        InlinePanel(
-            "portfolio_sections",
-            label="Sections",
-            help_text="Add and order sections to display on this page",
-        ),
-    ]
-
-    template = "pages/portfolio_showcase_page.html"
-    parent_page_types = ["wagtailcore.Page", "pages.FlexPage"]
-    subpage_types = ["pages.PortfolioItemPage"]
-
-    class Meta:
-        verbose_name = "Portfolio Showcase Page"
-        verbose_name_plural = "Portfolio Showcase Pages"
-
-
-class ResourceShowcasePage(AbstractShowcasePage):
-    """
-    A page that showcases resources.
+    A section on a showcase page, holding explicitly assigned items.
     """
 
-    content_panels = AbstractShowcasePage.content_panels + [
-        FieldPanel("introduction"),
-        InlinePanel(
-            "resource_sections",
-            label="Sections",
-            help_text="Add and order sections to display on this page",
-        ),
-    ]
-
-    template = "pages/resource_showcase_page.html"
-    parent_page_types = ["wagtailcore.Page", "pages.FlexPage"]
-    subpage_types = []
-
-    class Meta:
-        verbose_name = "Resource Showcase Page"
-        verbose_name_plural = "Resource Showcase Pages"
-
-
-class AbstractShowcaseSection(ClusterableModel, Orderable):
-    """
-    Abstract base model for showcase sections. Editors explicitly assign items to each section.
-    """
-
-    # Section heading
     heading = models.CharField(max_length=200, help_text="Heading for this section")
-
-    # Custom description for the section
     description = models.TextField(
         blank=True, help_text="Optional description for this section"
+    )
+    showcase_page = ParentalKey(
+        "pages.ShowcasePage",
+        on_delete=models.CASCADE,
+        related_name="showcase_sections",
     )
 
     panels = [
@@ -286,7 +212,6 @@ class AbstractShowcaseSection(ClusterableModel, Orderable):
     ]
 
     class Meta:
-        abstract = True
         ordering = ["sort_order"]
 
     def __str__(self):
@@ -299,61 +224,11 @@ class AbstractShowcaseSection(ClusterableModel, Orderable):
         return self.items.all()
 
 
-class ProjectShowcaseSection(AbstractShowcaseSection):
+class ShowcaseItem(ClusterableModel, Orderable):
     """
-    A section on the project showcase page.
-    """
-
-    showcase_page = ParentalKey(
-        "pages.ProjectShowcasePage",
-        on_delete=models.CASCADE,
-        related_name="project_sections",
-    )
-
-
-class ServiceShowcaseSection(AbstractShowcaseSection):
-    """
-    A section on the service showcase page.
+    An item in a showcase section, with its own title, description and links.
     """
 
-    showcase_page = ParentalKey(
-        "pages.ServiceShowcasePage",
-        on_delete=models.CASCADE,
-        related_name="service_sections",
-    )
-
-
-class PortfolioShowcaseSection(AbstractShowcaseSection):
-    """
-    A section on the portfolio showcase page.
-    """
-
-    showcase_page = ParentalKey(
-        "pages.PortfolioShowcasePage",
-        on_delete=models.CASCADE,
-        related_name="portfolio_sections",
-    )
-
-
-class ResourceShowcaseSection(AbstractShowcaseSection):
-    """
-    A section on the resource showcase page.
-    """
-
-    showcase_page = ParentalKey(
-        "pages.ResourceShowcasePage",
-        on_delete=models.CASCADE,
-        related_name="resource_sections",
-    )
-
-
-class AbstractShowcaseItem(ClusterableModel, Orderable):
-    """
-    Abstract base model for showcase items. Each item has its own title, description, and links,
-    and can optionally be attached to a page.
-    """
-
-    # Item fields
     title = models.CharField(
         max_length=200, help_text="Title for this item", default="Untitled"
     )
@@ -367,6 +242,9 @@ class AbstractShowcaseItem(ClusterableModel, Orderable):
         blank=True,
         help_text="Optional page to link to",
     )
+    section = ParentalKey(
+        "pages.ShowcaseSection", on_delete=models.CASCADE, related_name="items"
+    )
 
     panels = [
         FieldPanel("title"),
@@ -376,7 +254,6 @@ class AbstractShowcaseItem(ClusterableModel, Orderable):
     ]
 
     class Meta:
-        abstract = True
         ordering = ["sort_order"]
 
     def __str__(self):
@@ -389,68 +266,9 @@ class AbstractShowcaseItem(ClusterableModel, Orderable):
         return self.links.all()
 
 
-class ProjectShowcaseItem(AbstractShowcaseItem):
+class ShowcaseItemLink(Orderable):
     """
-    An item in a project showcase section.
-    """
-
-    section = ParentalKey(
-        "pages.ProjectShowcaseSection", on_delete=models.CASCADE, related_name="items"
-    )
-
-
-class ServiceShowcaseItem(AbstractShowcaseItem):
-    """
-    An item in a service showcase section.
-    """
-
-    section = ParentalKey(
-        "pages.ServiceShowcaseSection", on_delete=models.CASCADE, related_name="items"
-    )
-
-
-class PortfolioShowcaseItem(AbstractShowcaseItem):
-    """
-    An item in a portfolio showcase section. Includes an image field.
-    """
-
-    # Image field specific to portfolio items
-    image = models.ForeignKey(
-        "wagtailimages.Image",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="+",
-    )
-
-    section = ParentalKey(
-        "pages.PortfolioShowcaseSection", on_delete=models.CASCADE, related_name="items"
-    )
-
-    panels = AbstractShowcaseItem.panels + [
-        FieldPanel("image"),
-    ]
-
-
-class ResourceShowcaseItem(AbstractShowcaseItem):
-    """
-    An item in a resource showcase section. Resources don't have pages to link to.
-    """
-
-    section = ParentalKey(
-        "pages.ResourceShowcaseSection", on_delete=models.CASCADE, related_name="items"
-    )
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("description"),
-        InlinePanel("links", label="Links", help_text="Links for this item"),
-    ]
-
-
-class AbstractShowcaseItemLink(Orderable):
-    """
-    Abstract base model for showcase item links.
+    A link attached to a showcase item.
     """
 
     LINK_TARGET_CHOICES = [
@@ -463,6 +281,9 @@ class AbstractShowcaseItemLink(Orderable):
     target = models.CharField(
         max_length=10, choices=LINK_TARGET_CHOICES, default="_self"
     )
+    item = ParentalKey(
+        "pages.ShowcaseItem", on_delete=models.CASCADE, related_name="links"
+    )
 
     panels = [
         FieldPanel("title"),
@@ -471,48 +292,7 @@ class AbstractShowcaseItemLink(Orderable):
     ]
 
     class Meta:
-        abstract = True
         ordering = ["sort_order"]
 
     def __str__(self):
         return f"{self.item.title} -> {self.title}"
-
-
-class ProjectShowcaseItemLink(AbstractShowcaseItemLink):
-    """
-    Links for a project showcase item.
-    """
-
-    item = ParentalKey(
-        "pages.ProjectShowcaseItem", on_delete=models.CASCADE, related_name="links"
-    )
-
-
-class ServiceShowcaseItemLink(AbstractShowcaseItemLink):
-    """
-    Links for a service showcase item.
-    """
-
-    item = ParentalKey(
-        "pages.ServiceShowcaseItem", on_delete=models.CASCADE, related_name="links"
-    )
-
-
-class PortfolioShowcaseItemLink(AbstractShowcaseItemLink):
-    """
-    Links for a portfolio showcase item.
-    """
-
-    item = ParentalKey(
-        "pages.PortfolioShowcaseItem", on_delete=models.CASCADE, related_name="links"
-    )
-
-
-class ResourceShowcaseItemLink(AbstractShowcaseItemLink):
-    """
-    Links for a resource showcase item.
-    """
-
-    item = ParentalKey(
-        "pages.ResourceShowcaseItem", on_delete=models.CASCADE, related_name="links"
-    )
