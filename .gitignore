@@ -474,6 +474,3 @@ $RECYCLE.BIN/
 # Database
 db/*.db
 db/*.db-*
-
-# Frontend build output
-frontend/dist/
