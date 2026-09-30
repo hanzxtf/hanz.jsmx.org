@@ -7,7 +7,11 @@ from .base import env, MIDDLEWARE, environ, BASE_DIR, STORAGES
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # WhiteNoise for serving static files in development
-MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+MIDDLEWARE = [
+    *MIDDLEWARE[:1],
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    *MIDDLEWARE[1:],
+]
 
 
 # http://whitenoise.evans.io/en/stable/django.html#WHITENOISE_IMMUTABLE_FILE_TEST
@@ -39,8 +43,11 @@ WAGTAIL_SITE_NAME = "Wagtail Starter Kit"
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"
 
 # Media files are stored on the local filesystem in development
-STORAGES["default"] = {
-    "BACKEND": "django.core.files.storage.FileSystemStorage",
+STORAGES = {
+    **STORAGES,
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
 }
 
 # SECURITY WARNING: define the correct hosts in production!

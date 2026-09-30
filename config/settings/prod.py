@@ -1,15 +1,68 @@
+from django.core.exceptions import ImproperlyConfigured
+
 from .base import *  # noqa: F401, F403
-from .base import env, environ, STORAGES, DATABASES
+from .base import env, environ
 
 environ.Env.read_env("/usr/local/etc/wagtail/env")
 
+
+def _required(name, minimum_length=None):
+    value = env(name, default="")
+    if not value:
+        raise ImproperlyConfigured(
+            f"{name} must be set in /usr/local/etc/wagtail/env"
+        )
+    if minimum_length and len(value) < minimum_length:
+        raise ImproperlyConfigured(
+            f"{name} must be at least {minimum_length} characters long"
+        )
+    return value
+
+
+def _host_list(name):
+    hosts = [item.strip() for item in _required(name).split(",") if item.strip()]
+    if not hosts or "*" in hosts:
+        raise ImproperlyConfigured(
+            f"{name} must list the site's real hostnames, never '*'"
+        )
+    return hosts
+
+
+def _https_origins(name):
+    origins = [item.strip() for item in _required(name).split(",") if item.strip()]
+    insecure = [origin for origin in origins if not origin.startswith("https://")]
+    if not origins or insecure:
+        raise ImproperlyConfigured(
+            f"{name} must list https origins, got: {', '.join(insecure) or 'none'}"
+        )
+    return origins
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = _required("SECRET_KEY", minimum_length=50)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DJANGO_DEBUG")
+if DEBUG:
+    raise ImproperlyConfigured("DJANGO_DEBUG must be false in production")
 
+if not env("WAGTAILADMIN_BASE_URL", default="").startswith("https://"):
+    raise ImproperlyConfigured(
+        "WAGTAILADMIN_BASE_URL must be the site's https origin in production"
+    )
+
+ALLOWED_HOSTS = _host_list("ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = _https_origins("CSRF_TRUSTED_ORIGINS")
+USE_X_FORWARDED_HOST = env("USE_X_FORWARDED_HOST")
+USE_X_FORWARDED_PORT = env("USE_X_FORWARDED_PORT")
+
+# TLS terminates at nginx, which forwards the original scheme and port
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 60 * 60 * 24 * 365
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Django-Vite Settings
 # ------------------------------------------------------------------------------
@@ -56,16 +109,22 @@ AWS_QUERYSTRING_EXPIRE = env(
     "AWS_QUERYSTRING_EXPIRE", default=1800
 )  # 1/2 hour expiration
 
-# SECURITY WARNING: define the correct hosts in production!
-# This should be set to your domain or IP address in production
-ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(",")
-CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS").split(",")
-USE_X_FORWARDED_HOST = env("USE_X_FORWARDED_HOST")
-USE_X_FORWARDED_PORT = env("USE_X_FORWARDED_PORT")
-
-STORAGES["default"]["OPTIONS"]["public_endpoint_url"] = env(
-    "AWS_S3_PUBLIC_ENDPOINT_URL", default="http://localhost:9000"
-)
+# Media files are stored in S3-compatible object storage in production
+STORAGES = {
+    **STORAGES,
+    "default": {
+        **STORAGES["default"],
+        "OPTIONS": {
+            **STORAGES["default"].get("OPTIONS", {}),
+            "public_endpoint_url": env(
+                "AWS_S3_PUBLIC_ENDPOINT_URL", default="http://localhost:9000"
+            ),
+        },
+    },
+}
 
 # Database Path
-DATABASES["default"]["NAME"] = env("DATABASE_PATH")
+DATABASES = {
+    **DATABASES,
+    "default": {**DATABASES["default"], "NAME": env("DATABASE_PATH")},
+}

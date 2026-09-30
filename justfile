@@ -78,7 +78,8 @@ litestream-backup:
     litestream replicate
 
 setup-env:
-    # env file (secrets)
+    # env file (secrets) - start from .env.prod.example
+    [ -f $(pwd)/.env.prod ] || { echo "missing $(pwd)/.env.prod, copy .env.prod.example and fill it in"; exit 1; }
     awk 'NF && $1 !~ /^#/ {print "export " $0} !NF || $1 ~ /^#/ {print}' $(pwd)/.env.prod > /usr/local/etc/wagtail/env
 
     chmod 640 /usr/local/etc/wagtail/env
