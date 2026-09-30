@@ -102,8 +102,34 @@ The database is a SQLite file at `db/database.db`; media files live on disk.
 - `just makemigrations` - Create new migrations
 - `just vite-build` - Build frontend assets (commit the result, the server never runs pnpm)
 - `just lint` - Check formatting and unused imports
+- `just test` - Run the test suite
 - `just install` - Sync Python and frontend dependencies and install the pre-commit hooks
 - `uv run manage.py createsuperuser` - Create an admin user
+
+### Tests
+
+`just test` runs the suite (pytest + pytest-django). Nothing else is needed to
+set up: pytest builds and destroys its own database, so the development
+database at `db/database.db` is never touched, and no `.env` file is required
+(development defaults live in `config/settings/base.py`).
+
+To run one file or one test:
+
+```sh
+uv run pytest tests/test_showcase.py
+uv run pytest tests/test_search.py -k pagination
+```
+
+What the suite covers: every template compiles; models match the migrations;
+the homepage, search page and search results render; entity pages are served at
+their slug; forms store a submission and email it; menu edits are visible
+immediately; showcase pages render sections, items and links; production
+settings refuse insecure configuration; `requirements.txt` matches `uv.lock`;
+and the Litestream configuration stays durable.
+
+Run `just lint` and `just test` before committing (the pre-commit hook also
+runs ruff automatically).
+
 
 ## Production
 

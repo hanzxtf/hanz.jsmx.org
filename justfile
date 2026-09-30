@@ -206,6 +206,10 @@ lint:
     uv run ruff check .
     uv run ruff format --check .
 
+# run the test suite (pytest builds its own throwaway database)
+test:
+    uv run pytest
+
 [parallel]
 install: vite-install django-install pre-commit-install
 
