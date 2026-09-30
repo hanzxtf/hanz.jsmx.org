@@ -122,11 +122,13 @@ def test_seed_demo_refuses_to_replace_a_home_page_that_has_children():
 
 @pytest.mark.django_db
 def test_every_live_page_is_served(seeded_home):
+    """One sweep over the tree: status, shell, title, and the shared assets."""
     client = Client()
     pages = seeded_home.get_descendants(inclusive=True).live().public()
 
     assert pages.count() >= 8, "the sample site is too small to prove anything"
 
+    heads = {}
     for page in pages:
         url = page.get_url()
         assert url, f"{page!r} has no URL"
@@ -138,17 +140,18 @@ def test_every_live_page_is_served(seeded_home):
         assert page.title in html, url
         if page.search_description:
             assert page.search_description in html, url
+        assert "<header" in html and "<footer" in html, url
+        assert "hx-boost:inherited" in html, url
 
+        head = html.split("</head>")[0]
+        heads[page.slug] = frozenset(
+            re.findall(r'<(?:script|link)[^>]+(?:src|href)="([^"]+)"', head)
+        )
 
-@pytest.mark.django_db
-def test_every_page_carries_the_site_shell(seeded_home):
-    client = Client()
-
-    for page in seeded_home.get_descendants(inclusive=True).live():
-        html = client.get(page.get_url()).content.decode()
-        assert "<header" in html, page.slug
-        assert "<footer" in html, page.slug
-        assert "hx-boost:inherited" in html, page.slug
+    # the head merge can only drop an asset if some page's response lacks it
+    assert len(set(heads.values())) == 1, {
+        slug: sorted(urls) for slug, urls in heads.items()
+    }
 
 
 @pytest.mark.django_db

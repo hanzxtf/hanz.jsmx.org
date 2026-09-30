@@ -1,6 +1,7 @@
 """The interactivity stack is htmx 4: no Turbo code, config or bundle may remain."""
 
 import json
+import re
 from pathlib import Path
 
 from django.conf import settings
@@ -78,5 +79,17 @@ def test_built_bundle_ships_htmx_and_not_turbo():
     assert "turbo" not in bundle.lower()
     # the head-merging extension has to survive bundling
     assert "htmx:head:before:merge" in bundle
-    # and so does the guard that keeps the merge from stripping the stylesheet
-    assert "htmx:head:before:remove" in bundle
+
+
+def test_development_only_code_stays_out_of_the_build():
+    """dev.js is loaded by the dev server only; the build must not contain it."""
+    dev_js = FRONTEND / "src" / "app" / "dev.js"
+    main_js = FRONTEND / "src" / "app" / "main.js"
+
+    assert dev_js.exists()
+    assert "import.meta.env.DEV" in main_js.read_text()
+
+    guard = re.compile(r"""addEventListener\(\s*['"]htmx:head:before:remove['"]""")
+    for path in (FRONTEND / "dist").rglob("*"):
+        if path.is_file():
+            assert not guard.search(path.read_text(errors="ignore")), path.name
