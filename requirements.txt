@@ -3,9 +3,7 @@
 anyascii==0.3.3
     # via wagtail
 asgiref==3.11.1
-    # via
-    #   channels
-    #   django
+    # via django
 beautifulsoup4==4.14.3
     # via wagtail
 boto3==1.42.78
@@ -16,8 +14,6 @@ botocore==1.42.78
     #   s3transfer
 certifi==2026.2.25
     # via requests
-channels==4.3.2
-    # via django-actioncable
 charset-normalizer==3.4.6
     # via requests
 click==8.1.7
@@ -28,8 +24,6 @@ defusedxml==0.7.1
     # via willow
 django==5.2.15
     # via
-    #   channels
-    #   django-actioncable
     #   django-filter
     #   django-modelcluster
     #   django-permissionedforms
@@ -37,17 +31,13 @@ django==5.2.15
     #   django-stubs-ext
     #   django-taggit
     #   django-tasks
-    #   django-template-simplify
     #   django-treebeard
-    #   django-turbo-helper
     #   django-vite
     #   djangorestframework
     #   laces
     #   modelsearch
     #   wagtail
     #   wagtail-starter-kit
-django-actioncable==1.0.4
-    # via django-turbo-helper
 django-environ==0.13.0
     # via wagtail-starter-kit
 django-filter==25.2
@@ -66,12 +56,8 @@ django-tasks==0.12.0
     # via
     #   modelsearch
     #   wagtail
-django-template-simplify==1.0.3
-    # via django-turbo-helper
 django-treebeard==4.8.0
     # via wagtail
-django-turbo-helper==2.1.5
-    # via wagtail-starter-kit
 django-vite==3.1.0
     # via wagtail-starter-kit
 djangorestframework==3.17.1

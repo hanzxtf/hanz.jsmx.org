@@ -63,7 +63,6 @@ INSTALLED_APPS = [
     "wagtail_flexible_forms",
     # Frontend integration
     "django_vite",
-    "turbo_helper",
     # Our apps
     "apps.core",
     "apps.pages",
@@ -85,7 +84,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-    "turbo_helper.middleware.TurboMiddleware",
     "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
 

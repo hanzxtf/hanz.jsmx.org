@@ -7,7 +7,7 @@ A modern, flexible foundation for building high-performance marketing websites w
 - **Django 5.2 LTS** and **Wagtail 7.4 LTS** - Latest stable versions
 - **SQLite** as primary database with Litestream replication
 - **Tailwind CSS v4** with **DaisyUI v5** - Modern utility-first CSS framework
-- **Turbo 8** + **Stimulus 3** - Enhanced interactivity without complex JavaScript
+- **htmx 4** + **Stimulus 3** - Enhanced interactivity without complex JavaScript
 - **StreamField Blocks** - Flexible content composition system
 - **Navigation Snippets** - Reusable menu system
 - **SEO Ready** - Built-in SEO functionality with wagtail-seo
@@ -224,7 +224,7 @@ The starter kit includes a comprehensive set of reusable blocks:
 
 ### JavaScript
 
-- Turbo 8 & Stimulus 3 for for dynamic interactions and complex behaviors when needed
+- htmx 4 (boosted navigation, AJAX forms) & Stimulus 3 for dynamic interactions and complex behaviors when needed
 
 ### Asset Pipeline
 

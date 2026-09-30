@@ -7,11 +7,8 @@ import "../css/styles.css";
 // Import GSAP
 import { gsap } from "gsap";
 
-// Import Turbo
-import "@hotwired/turbo";
-
-// Disable Turbo Drive by default globally
-// Turbo.session.drive = false;
+// Import htmx: boosted navigation and AJAX form submissions
+import "htmx.org";
 
 // Import Stimulus
 import { Application } from "@hotwired/stimulus";

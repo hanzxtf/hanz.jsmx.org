@@ -70,7 +70,7 @@
         {# Favicon #}
         <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
     </head>
-    <body class="min-h-screen bg-base-100">
+    <body class="min-h-screen bg-base-100" hx-boost:inherited="true">
         {# Site header #}
         {% include "includes/header.html" %}
 

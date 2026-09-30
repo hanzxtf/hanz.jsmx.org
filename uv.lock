@@ -134,19 +134,6 @@ wheels = [
 ]
 
 [[package]]
-name = "channels"
-version = "4.3.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "asgiref" },
-    { name = "django" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/74/92/b18d4bb54d14986a8b35215a1c9e6a7f9f4d57ca63ac9aee8290ebb4957d/channels-4.3.2.tar.gz", hash = "sha256:f2bb6bfb73ad7fb4705041d07613c7b4e69528f01ef8cb9fb6c21d9295f15667", size = 27023, upload-time = "2025-11-20T15:13:05.102Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/16/34/c32915288b7ef482377b6adc401192f98c6a99b3a145423d3b8aed807898/channels-4.3.2-py3-none-any.whl", hash = "sha256:fef47e9055a603900cf16cef85f050d522d9ac4b3daccf24835bd9580705c176", size = 31313, upload-time = "2025-11-20T15:13:02.357Z" },
-]
-
-[[package]]
 name = "charset-normalizer"
 version = "3.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -289,19 +276,6 @@ wheels = [
 ]
 
 [[package]]
-name = "django-actioncable"
-version = "1.0.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "channels" },
-    { name = "django" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a8/d7/e203e37e9cc574c58bb4e824897743db985038602c2acaa1ecda2512a893/django_actioncable-1.0.4.tar.gz", hash = "sha256:0b24111b27e7aa6ed3cad1acaca47b3537dc73d49c266c5c4b2b42b079c2d6bb", size = 4497, upload-time = "2024-01-18T07:34:59.04Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/63/b8/72af5276ea41e4c60cc785e878f121b36a07c3658867c81ae7294dec53b3/django_actioncable-1.0.4-py3-none-any.whl", hash = "sha256:c7becceb29a6748266a8b35b426103506549d4d759c031ef0468a09f61161524", size = 5655, upload-time = "2024-01-18T07:34:57.868Z" },
-]
-
-[[package]]
 name = "django-environ"
 version = "0.13.0"
 source = { registry = "https://pypi.org/simple" }
@@ -398,18 +372,6 @@ wheels = [
 ]
 
 [[package]]
-name = "django-template-simplify"
-version = "1.0.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c3/92/cf6be933ee5e8017eb53db3d4f269e5c73b9fd94db70b3870fc8e59633db/django_template_simplify-1.0.3.tar.gz", hash = "sha256:acfe8f71d6695bc690edcfe95cb51166566a2f916f95f6ce106d1951575725c3", size = 3294, upload-time = "2025-07-03T08:15:42.803Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e0/1a/7c0d1e08ae64c27781eab401bd419f87d1efb1b489f4a0a6ba83393bf18e/django_template_simplify-1.0.3-py3-none-any.whl", hash = "sha256:4433d11ed26835ebfa88c76de9cb28a3fec52d727c092863fb711b56d221a526", size = 4275, upload-time = "2025-07-03T08:15:41.714Z" },
-]
-
-[[package]]
 name = "django-treebeard"
 version = "4.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -419,20 +381,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/7a/d2/615c2d33b3b55e106ee590b164c0d4a8372527293c85c61175e81ded2aea/django_treebeard-4.8.0.tar.gz", hash = "sha256:61b8076b576107da21f6f6040774c0d17025200c2efdb70dd1f14b18c9206c3a", size = 292517, upload-time = "2025-12-03T03:58:40.625Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/aa/3a/3731f6d5696b5dfd1c7830a64450e1f49b512cb192b2d3e37b72cc75470b/django_treebeard-4.8.0-py3-none-any.whl", hash = "sha256:ecaa7a0bbfa86a48fc91ff335513e83c841cdfe1add6229d04ac7096198d5d51", size = 70997, upload-time = "2025-12-03T03:58:37.292Z" },
-]
-
-[[package]]
-name = "django-turbo-helper"
-version = "2.1.5"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-    { name = "django-actioncable" },
-    { name = "django-template-simplify" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/23/b0/a8c34fc146cc7e07c475e916a125125bc605ee7a575cb855c246f3e78fa8/django_turbo_helper-2.1.5.tar.gz", hash = "sha256:dc76721447b777d4b6c70ad91a9c5052944af05134a682497134311ab7226215", size = 9116, upload-time = "2026-01-05T10:23:57.445Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/c4/36c7812ccf17e58f41c603a628e32a4b94cc50cd075aac225ebe054bbf78/django_turbo_helper-2.1.5-py3-none-any.whl", hash = "sha256:12f0c37c5deb966eee13c44ed502f85d1768a5d6235f60b906e9b99c74ee5725", size = 13450, upload-time = "2026-01-05T10:23:56.401Z" },
 ]
 
 [[package]]
@@ -1178,7 +1126,6 @@ dependencies = [
     { name = "django" },
     { name = "django-environ" },
     { name = "django-storages" },
-    { name = "django-turbo-helper" },
     { name = "django-vite" },
     { name = "pillow" },
     { name = "uvicorn" },
@@ -1207,7 +1154,6 @@ requires-dist = [
     { name = "django", specifier = ">=5.2,<5.3" },
     { name = "django-environ", specifier = ">=0.12.0" },
     { name = "django-storages", specifier = ">=1.14.0" },
-    { name = "django-turbo-helper", specifier = ">=2.1.4" },
     { name = "django-vite", specifier = ">=3.1.0" },
     { name = "pillow", specifier = "==11.3.0" },
     { name = "uvicorn", specifier = "==0.41.0" },

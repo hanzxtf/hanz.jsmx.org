@@ -2,9 +2,9 @@
 
 <form
     method="post"
+    action="{{ page.url|default:'' }}"
     class="space-y-6"
-    data-controller="form"
-    data-action="turbo:submit-start->form#onTurboSubmitStart turbo:submit-end->form#onTurboSubmitEnd"
+    hx-disable="find button"
 >
     {% csrf_token %}
 
