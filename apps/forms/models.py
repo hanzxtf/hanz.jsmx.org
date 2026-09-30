@@ -1,5 +1,6 @@
-from django.db import models
+from django.conf import settings
 from django.core.mail import send_mail
+from django.db import models
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
@@ -94,22 +95,31 @@ class FormPage(StreamFormMixin, BasePage):
         context["base_template"] = "base.html"
         return context
 
-    def process_form_submission(self, form):
-        submission = self.get_submission_class().objects.create(
-            form_data=form.cleaned_data,
-            page=self,
+    def create_final_submission(self, request, delete_session=True):
+        """Store the completed submission, then email it to the configured inbox."""
+        submission_data = self.get_session_submission(request).get_data()
+        submission = super().create_final_submission(
+            request, delete_session=delete_session
         )
-        if self.to_address:
-            self.send_mail(form)
+        self.send_mail(submission_data)
         return submission
 
-    def send_mail(self, form):
-        addresses = [x.strip() for x in self.to_address.split(",")]
-        content = []
-        for field in form:
-            value = field.value()
-            if isinstance(value, list):
-                value = ", ".join(value)
-            content.append(f"{field.label}: {value}")
-        content = "\n".join(content)
-        send_mail(self.subject, content, self.from_address, addresses)
+    def send_mail(self, submission_data):
+        """Notify the configured inbox about a completed submission."""
+        if not self.to_address:
+            return
+
+        addresses = [x.strip() for x in self.to_address.split(",") if x.strip()]
+        metadata = {"status", "user", "last_modification"}
+        content = "\n".join(
+            f"{key}: {value}"
+            for key, value in submission_data.items()
+            if key not in metadata
+        )
+
+        send_mail(
+            self.subject or f"New submission: {self.title}",
+            content,
+            self.from_address or settings.DEFAULT_FROM_EMAIL,
+            addresses,
+        )

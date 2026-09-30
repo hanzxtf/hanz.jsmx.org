@@ -35,6 +35,9 @@ DJANGO_VITE = {
 # Disable wagtail cache in development
 WAGTAIL_CACHE = False
 
+# Print form notification emails to the console instead of sending them
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 DEBUG = True
 SECRET_KEY = env("SECRET_KEY")
 

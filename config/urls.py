@@ -29,7 +29,6 @@ urlpatterns = [
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", include("apps.search.urls")),
-    path("forms/", include("apps.forms.urls")),
     path("", include(wagtail_urls)),
 ]
 
