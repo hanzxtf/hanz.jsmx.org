@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 from wagtail.fields import StreamField
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.models import Orderable
@@ -96,30 +95,11 @@ class ProjectPage(BaseEntityPage):
     A project page that may or may not have child pages.
     """
 
-    has_page = models.BooleanField(
-        default=False, help_text="Check this box if this project has its own page"
-    )
-
-    content_panels = BaseEntityPage.content_panels + [
-        FieldPanel("has_page"),
-    ]
+    content_panels = BaseEntityPage.content_panels
 
     parent_page_types = ["pages.ProjectShowcasePage"]
-    subpage_types = ["pages.FlexPage"]  # Only if has_page is True
+    subpage_types = ["pages.FlexPage"]
     template = "pages/project_page.html"
-
-    def clean(self):
-        # If has_page is False, ensure no child pages exist
-        if not self.has_page and self.get_children().exists():
-            raise ValidationError("Cannot have child pages when 'has_page' is False.")
-
-    def save(self, *args, **kwargs):
-        # Update subpage_types based on has_page value
-        if self.has_page:
-            self.subpage_types = ["pages.FlexPage"]
-        else:
-            self.subpage_types = []
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Project Page"
