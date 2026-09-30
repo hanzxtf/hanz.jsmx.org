@@ -129,6 +129,8 @@ back at this file.
 | `LITESTREAM_*` | replication credentials and bucket |
 | `DEFAULT_FROM_EMAIL` | a real address, so form notifications come from the site |
 | `EMAIL_HOST` / `EMAIL_PORT` | the relay this server can reach; a local MTA on port 25 is fine |
+| `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | relay credentials, empty for a local MTA |
+| `EMAIL_USE_SSL` / `EMAIL_USE_TLS` | which encryption the relay wants, see below |
 
 If mail fails, the submission is still stored and the error is logged, so a mail
 outage never turns a visitor's submission into an error page. That also means a
@@ -139,9 +141,24 @@ just prod-mail-check you@example.com
 ```
 
 A local MTA on port 25 accepts the message; whether it is delivered depends on
-the server's own outbound mail and DNS records. For guaranteed delivery point
-`EMAIL_HOST` at a real relay and fill in `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`
-and `EMAIL_USE_TLS=true`.
+the server's own outbound mail and DNS records. A hosted relay is more
+dependable, and is configured with nothing but the variables above. Resend, for
+example, gives SMTP credentials on a verified domain:
+
+```
+DEFAULT_FROM_EMAIL=website@hanz.jsmx.org
+EMAIL_HOST=smtp.resend.com
+EMAIL_PORT=465
+EMAIL_HOST_USER=resend
+EMAIL_HOST_PASSWORD=<api key>
+EMAIL_USE_SSL=true
+```
+
+Port 587 with `EMAIL_USE_TLS=true` and `EMAIL_USE_SSL=false` is the alternative.
+Set only one of the two: Django raises `ValueError` as soon as both are true
+rather than opening a connection. The sending domain must be verified with the
+provider, otherwise it refuses the message and the error lands in
+`/var/log/wagtail.log` instead of an inbox.
 
 Then install it where the rc.d service reads it (`root:www`, mode 640):
 

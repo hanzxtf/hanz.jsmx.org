@@ -26,6 +26,8 @@ env = environ.Env(
     EMAIL_HOST_USER=(str, ""),
     EMAIL_HOST_PASSWORD=(str, ""),
     EMAIL_USE_TLS=(bool, False),
+    EMAIL_USE_SSL=(bool, False),
+    EMAIL_TIMEOUT=(int, 10),
 )
 
 
@@ -220,6 +222,12 @@ EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+# Implicit TLS (port 465) as opposed to STARTTLS (port 587); a hosted relay
+# offers both, and it says which in its SMTP credentials.
+EMAIL_USE_SSL = env("EMAIL_USE_SSL")
+# Seconds to wait on the relay. Without a bound, an unreachable relay holds the
+# visitor's submission open until the OS gives up on the socket.
+EMAIL_TIMEOUT = env("EMAIL_TIMEOUT")
 
 
 # Increase the maximum number of fields for complex page models
