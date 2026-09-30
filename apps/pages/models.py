@@ -80,59 +80,15 @@ class BaseEntityPage(FlexPage):
         related_name="+",
     )
 
-    URL_TYPE_CHOICES = [
-        ("seo", "SEO-friendly Slug"),
-        ("uuid", "UUID-based"),
-    ]
-    url_type_preference = models.CharField(
-        max_length=10,
-        choices=URL_TYPE_CHOICES,
-        default="seo",
-        help_text="Choose whether to display SEO-friendly URLs or UUID-based URLs",
-    )
-
     # Add tag to content panels
     content_panels = FlexPage.content_panels + [
         FieldPanel("tag"),
-        FieldPanel("url_type_preference"),
     ]
 
     template = "pages/entity_base.html"
 
     class Meta:
         abstract = True
-
-    def get_url_parts(self, request=None, current_site=None):
-        """
-        Override URL generation to support both SEO-friendly and UUID-based URLs.
-        """
-        url_parts = super().get_url_parts(request, current_site)
-        if url_parts is None:
-            return None
-
-        if self.url_type_preference == "uuid" and self.uuid:
-            # Replace the slug part with the UUID
-            site_id, root_url, page_path = url_parts
-            # Split the path and replace the last part (slug) with UUID
-            path_parts = page_path.rstrip("/").split("/")
-            if path_parts:
-                path_parts[-1] = str(self.uuid)
-                page_path = "/".join(path_parts) + "/"
-            return (site_id, root_url, page_path)
-
-        return url_parts
-
-    def get_uuid_url(self):
-        """
-        Get the UUID-based URL for this page.
-        """
-        if self.uuid:
-            # Get the parent URL and append the UUID
-            if self.get_parent():
-                parent_url = self.get_parent().specific.get_url()
-                return f"{parent_url}uuid/{self.uuid}/"
-            return f"/uuid/{self.uuid}/"
-        return "#"
 
 
 class ProjectPage(BaseEntityPage):
