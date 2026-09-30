@@ -4,6 +4,13 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 
+MENU_TREE_CACHE_SECONDS = 60 * 15
+
+
+def menu_tree_cache_key(slug):
+    """Cache key for the rendered tree of the menu with this slug."""
+    return f"menu_tree_{slug}"
+
 
 class MenuItem(Orderable):
     """

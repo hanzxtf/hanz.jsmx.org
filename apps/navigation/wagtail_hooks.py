@@ -1,9 +1,6 @@
-from wagtail import hooks
-from wagtail.admin.menu import MenuItem
-from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail.snippets.models import register_snippet
-from wagtail.admin.panels import FieldPanel, InlinePanel
-from django.utils.translation import gettext_lazy as _
+from wagtail.snippets.views.snippets import SnippetViewSet
+
 from .models import Menu
 
 
@@ -15,12 +12,6 @@ class MenuAdmin(SnippetViewSet):
 
     # Add list display for better overview
     list_display = ["title", "slug"]
-
-    panels = [
-        FieldPanel("title"),
-        FieldPanel("slug"),
-        InlinePanel("menu_items", heading="Menu Items", label="Menu Item"),
-    ]
 
     @property
     def icon(self):
@@ -41,15 +32,3 @@ class MenuAdmin(SnippetViewSet):
 
 # Register the Menu model as a snippet with the custom admin interface
 register_snippet(MenuAdmin)
-
-
-# Add a hook to add the navigation menu to the main admin menu
-@hooks.register("register_admin_menu_item")
-def register_navigation_menu():
-    # Use the correct URL pattern for Wagtail snippets
-    return MenuItem(
-        _("Navigation"),
-        "/admin/snippets/navigation/menu/",
-        icon_name="bars",
-        order=100,
-    )

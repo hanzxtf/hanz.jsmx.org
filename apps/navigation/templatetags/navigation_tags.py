@@ -1,7 +1,9 @@
 import logging
+
 from django import template
 from django.core.cache import cache
-from apps.navigation.models import Menu
+
+from apps.navigation.models import MENU_TREE_CACHE_SECONDS, Menu, menu_tree_cache_key
 
 logger = logging.getLogger(__name__)
 register = template.Library()
@@ -13,8 +15,7 @@ def get_menu_tree(slug):
     Returns the complete menu tree with nested structure for the given slug.
     Includes caching for performance optimization.
     """
-    # Try to get from cache first
-    cache_key = f"menu_tree_{slug}"
+    cache_key = menu_tree_cache_key(slug)
     cached_result = cache.get(cache_key)
 
     if cached_result is not None:
@@ -27,8 +28,7 @@ def get_menu_tree(slug):
         ).get(slug=slug)
         result = menu.get_menu_tree()
 
-        # Cache for 15 minutes (adjust as needed)
-        cache.set(cache_key, result, 900)
+        cache.set(cache_key, result, MENU_TREE_CACHE_SECONDS)
         return result
     except Menu.DoesNotExist:
         logger.warning(f"Menu with slug '{slug}' does not exist")
