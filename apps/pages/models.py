@@ -461,9 +461,6 @@ class ResourceShowcaseItem(AbstractShowcaseItem):
         "pages.ResourceShowcaseSection", on_delete=models.CASCADE, related_name="items"
     )
 
-    # Override the page field to make it non-editable for resources
-    page = None
-
     panels = [
         FieldPanel("title"),
         FieldPanel("description"),
