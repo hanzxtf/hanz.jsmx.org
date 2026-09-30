@@ -65,3 +65,28 @@ def test_prod_hardens_cookies_and_transport(monkeypatch):
     assert prod.SECURE_SSL_REDIRECT is True
     assert prod.SECURE_HSTS_SECONDS > 0
     assert prod.SECURE_PROXY_SSL_HEADER == ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+@pytest.mark.parametrize(
+    "overrides,setting",
+    [
+        ({"SECRET_KEY": ""}, "SECRET_KEY"),
+        ({"SECRET_KEY": "short"}, "SECRET_KEY"),
+        ({"ALLOWED_HOSTS": ""}, "ALLOWED_HOSTS"),
+        ({"ALLOWED_HOSTS": "*"}, "ALLOWED_HOSTS"),
+        ({"CSRF_TRUSTED_ORIGINS": ""}, "CSRF_TRUSTED_ORIGINS"),
+        ({"CSRF_TRUSTED_ORIGINS": "http://hanz.jsmx.org"}, "CSRF_TRUSTED_ORIGINS"),
+        ({"WAGTAILADMIN_BASE_URL": ""}, "WAGTAILADMIN_BASE_URL"),
+        ({"DJANGO_DEBUG": "true"}, "DJANGO_DEBUG"),
+    ],
+)
+def test_prod_errors_tell_the_operator_what_to_set_and_where(
+    monkeypatch, overrides, setting
+):
+    with pytest.raises(ImproperlyConfigured) as raised:
+        load_prod(monkeypatch, **overrides)
+
+    message = str(raised.value)
+    assert setting in message
+    assert ".env.prod" in message
+    assert "just setup-env" in message

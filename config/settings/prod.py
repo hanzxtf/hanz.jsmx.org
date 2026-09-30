@@ -3,26 +3,32 @@ from django.core.exceptions import ImproperlyConfigured
 from .base import *  # noqa: F401, F403
 from .base import DATABASES, STORAGES, env, environ
 
-environ.Env.read_env("/usr/local/etc/wagtail/env")
+# The operator fills in the repo file and `just setup-env` installs it here.
+ENV_SOURCE = ".env.prod"
+ENV_FILE = "/usr/local/etc/wagtail/env"
+
+environ.Env.read_env(ENV_FILE)
+
+HOW_TO_FIX = f"set it in {ENV_SOURCE}, then run `just setup-env` (installs {ENV_FILE})"
+
+
+def _fail(name, reason):
+    raise ImproperlyConfigured(f"{name} {reason}. To fix: {HOW_TO_FIX}")
 
 
 def _required(name, minimum_length=None):
     value = env(name, default="")
     if not value:
-        raise ImproperlyConfigured(f"{name} must be set in /usr/local/etc/wagtail/env")
+        _fail(name, "is not set")
     if minimum_length and len(value) < minimum_length:
-        raise ImproperlyConfigured(
-            f"{name} must be at least {minimum_length} characters long"
-        )
+        _fail(name, f"must be at least {minimum_length} characters long")
     return value
 
 
 def _host_list(name):
     hosts = [item.strip() for item in _required(name).split(",") if item.strip()]
     if not hosts or "*" in hosts:
-        raise ImproperlyConfigured(
-            f"{name} must list the site's real hostnames, never '*'"
-        )
+        _fail(name, "must list the site's real hostnames, never '*'")
     return hosts
 
 
@@ -30,8 +36,9 @@ def _https_origins(name):
     origins = [item.strip() for item in _required(name).split(",") if item.strip()]
     insecure = [origin for origin in origins if not origin.startswith("https://")]
     if not origins or insecure:
-        raise ImproperlyConfigured(
-            f"{name} must list https origins, got: {', '.join(insecure) or 'none'}"
+        _fail(
+            name,
+            f"must list https origins, got: {', '.join(insecure) or 'none'}",
         )
     return origins
 
@@ -42,12 +49,10 @@ SECRET_KEY = _required("SECRET_KEY", minimum_length=50)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DJANGO_DEBUG")
 if DEBUG:
-    raise ImproperlyConfigured("DJANGO_DEBUG must be false in production")
+    _fail("DJANGO_DEBUG", "must be false in production")
 
 if not env("WAGTAILADMIN_BASE_URL", default="").startswith("https://"):
-    raise ImproperlyConfigured(
-        "WAGTAILADMIN_BASE_URL must be the site's https origin in production"
-    )
+    _fail("WAGTAILADMIN_BASE_URL", "must be the site's https origin in production")
 
 ALLOWED_HOSTS = _host_list("ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = _https_origins("CSRF_TRUSTED_ORIGINS")

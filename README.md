@@ -105,6 +105,13 @@ The database is a SQLite file at `db/database.db`; media files live on disk.
 - `just install` - Sync Python and frontend dependencies and install the pre-commit hooks
 - `uv run manage.py createsuperuser` - Create an admin user
 
+## Production
+
+`prod/freebsd/` holds the nginx, Litestream, pf and rc.d configuration plus the
+deploy scripts. Follow `prod/freebsd/README.md`; its environment section lists
+every setting production requires and how to install them
+(`.env.prod.example` → `.env.prod` → `just setup-env`).
+
 ## Content Modeling
 
 ### BasePage Model

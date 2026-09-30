@@ -103,3 +103,39 @@ chmod 644 /usr/local/etc/ssl/cf-origin.pem
 ```
 pkg install --yes nginx litestream just python311 uv
 ```
+
+# environment and secrets
+
+Start from the template and fill in every empty value:
+
+```
+cp .env.prod.example .env.prod
+python3 -c "import secrets; print(secrets.token_urlsafe(64))"   # -> SECRET_KEY
+```
+
+`.env.prod` is ignored by git. Production refuses to start if a required value
+is missing or still a placeholder, and the error names the setting and points
+back at this file.
+
+| Setting | What to put |
+| --- | --- |
+| `SECRET_KEY` | at least 50 random characters, unique to this server |
+| `DJANGO_DEBUG` | `false` |
+| `ALLOWED_HOSTS` | comma-separated real hostnames, never `*` |
+| `CSRF_TRUSTED_ORIGINS` | comma-separated `https://` origins |
+| `WAGTAILADMIN_BASE_URL` | this site's `https://` origin |
+| `DATABASE_PATH` | the SQLite file Litestream replicates, e.g. `/var/db/wagtail/database.db` |
+| `AWS_*` | media storage credentials |
+| `LITESTREAM_*` | replication credentials and bucket |
+| `DEFAULT_FROM_EMAIL` | a real address, so form notifications come from the site |
+
+Then install it where the rc.d service reads it (`root:www`, mode 640):
+
+```
+just setup-env
+```
+
+`just prod-setup` runs this as part of the first deploy.
+
+If the service refuses to start, `/var/log/wagtail.log` names the setting that
+is missing or wrong.
