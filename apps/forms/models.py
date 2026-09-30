@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
@@ -12,6 +14,8 @@ from wagtail_flexible_forms.models import (
 from apps.core.models import BasePage
 from apps.blocks.models import ContentStreamBlock
 from wagtail_flexible_forms.blocks import FormFieldsBlock
+
+logger = logging.getLogger(__name__)
 
 
 class SubmissionRevision(AbstractSubmissionRevision):
@@ -117,9 +121,15 @@ class FormPage(StreamFormMixin, BasePage):
             if key not in metadata
         )
 
-        send_mail(
-            self.subject or f"New submission: {self.title}",
-            content,
-            self.from_address or settings.DEFAULT_FROM_EMAIL,
-            addresses,
-        )
+        try:
+            send_mail(
+                self.subject or f"New submission: {self.title}",
+                content,
+                self.from_address or settings.DEFAULT_FROM_EMAIL,
+                addresses,
+            )
+        except Exception:
+            # The submission is already stored, so a mail outage (or a mail
+            # server that was never configured) must not fail the visitor's
+            # request. Loud in the logs, not a 500 for the person who wrote in.
+            logger.exception("Could not email the submission for %r", self)

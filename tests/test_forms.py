@@ -65,5 +65,21 @@ def test_submission_without_recipient_sends_no_mail(form_page):
 
 
 @pytest.mark.django_db
+def test_submission_survives_a_mail_server_that_is_down(form_page, monkeypatch, caplog):
+    """The submission is stored, so a mail outage must not 500 the visitor."""
+
+    def refuse(*args, **kwargs):
+        raise ConnectionRefusedError("no mail server here")
+
+    monkeypatch.setattr("apps.forms.models.send_mail", refuse)
+
+    response = Client().post("/contact/", {})
+
+    assert response.status_code == 200
+    assert form_page.get_submission_class().objects.filter(page=form_page).count() == 1
+    assert "Could not email the submission" in caplog.text
+
+
+@pytest.mark.django_db
 def test_legacy_uuid_form_route_is_gone(form_page):
     assert Client().get(f"/forms/{form_page.uuid}/").status_code == 404

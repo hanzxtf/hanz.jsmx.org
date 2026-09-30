@@ -128,6 +128,10 @@ back at this file.
 | `AWS_*` | media storage credentials |
 | `LITESTREAM_*` | replication credentials and bucket |
 | `DEFAULT_FROM_EMAIL` | a real address, so form notifications come from the site |
+| `EMAIL_HOST` / `EMAIL_PORT` | the relay this server can reach; a local MTA on port 25 is fine |
+
+If mail fails, the submission is still stored and the error is logged, so a mail
+outage never turns a visitor's submission into an error page.
 
 Then install it where the rc.d service reads it (`root:www`, mode 640):
 
