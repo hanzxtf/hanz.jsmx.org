@@ -101,6 +101,7 @@ The database is a SQLite file at `db/database.db`; media files live on disk.
 - `just dev-migrate` - Apply database migrations
 - `just makemigrations` - Create new migrations
 - `just seed` - Build the sample site in the development database
+- `just unseed` - Remove the sample site again
 - `just vite-build` - Build frontend assets (commit the result, the server never runs pnpm)
 - `just lint` - Check formatting and unused imports
 - `just test` - Run the test suite
@@ -114,6 +115,11 @@ page using every block type, a flex page, a showcase with sections, items and
 links, project / service / portfolio pages, a contact form, both menus and the
 site settings. It is idempotent, so run it again after a `git pull`. It replaces
 Wagtail's placeholder home page, but only while that page has no children.
+
+`just unseed` (`manage.py seed_demo --clear`) takes it all back out: the sample
+pages, snippets, tags, image, menu items and site settings, leaving an empty
+site that still serves. It only touches the sample content, so admin users and
+anything else you added survive.
 
 The test suite builds the same content, so the sample site is exercised on
 every run (`tests/test_sample_site.py`).
@@ -131,6 +137,13 @@ To run one file or one test:
 uv run pytest tests/test_showcase.py
 uv run pytest tests/test_search.py -k pagination
 ```
+
+Every test that touches the database is marked `django_db` and runs against a
+throwaway SQLite database. `tests/conftest.py` points static and media files at
+temporary directories (so a run leaves nothing behind), and the `seeded_home`
+fixture builds the sample site by calling the same `seed_demo` command you run
+by hand, so the tests exercise the real command instead of hand-made fixtures.
+`tests/test_sample_site.py` then walks the page tree and requests every page.
 
 What the suite covers: every template compiles; models match the migrations;
 the sample site is crawled page by page and every block, menu and showcase item
@@ -152,6 +165,20 @@ uv run --with playwright python scripts/check_frontend.py
 
 Run `just lint` and `just test` before committing (the pre-commit hook also
 runs ruff automatically).
+
+### Cleaning up
+
+`just unseed` removes the sample content but keeps the site, its users and your
+own pages. To go further back, delete the development database and migrate
+again: `rm db/database.db && just dev-migrate` (this drops admin users and
+everything else in it).
+
+`just clean` removes `.venv`, `frontend/node_modules` and `frontend/dist`. The
+`frontend/dist` build is committed, so restore it with
+`git checkout frontend/dist` or rebuild it with `just vite-build`.
+
+The browser check downloads Chromium into `~/.cache/ms-playwright`; delete that
+directory if you no longer want it.
 
 
 ## Production

@@ -7,15 +7,19 @@ from django.core import mail
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import Client
+from wagtail.images import get_image_model
 from wagtail.models import Page, Site
 
+from apps.navigation.models import MenuItem
 from apps.pages.models import (
     FlexPage,
     PortfolioItemPage,
     ProjectPage,
     ServicePage,
     ShowcasePage,
+    Tag,
 )
+from apps.snippets.models import TeamMember
 
 PAGE_TYPES = [
     FlexPage,
@@ -58,6 +62,36 @@ def test_seed_demo_is_idempotent(seeded_home):
 
 
 @pytest.mark.django_db
+def test_seed_demo_clear_removes_the_sample_site(seeded_home):
+    call_command("seed_demo", "--clear", verbosity=0)
+
+    home = Site.objects.get(is_default_site=True).root_page
+    assert Client().get("/").status_code == 200
+    assert home.get_children().count() == 0
+    assert not home.specific.body
+    assert Tag.objects.count() == 0
+    assert MenuItem.objects.count() == 0
+    assert TeamMember.objects.count() == 0
+    assert get_image_model().objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_seed_demo_clear_leaves_a_healthy_page_tree(seeded_home):
+    """treebeard counts children in numchild; a stale count breaks page creation."""
+    call_command("seed_demo", "--clear", verbosity=0)
+
+    home = Site.objects.get(is_default_site=True).root_page
+    root = Page.get_first_root_node()
+
+    assert Page.objects.get(pk=home.pk).numchild == home.get_children().count() == 0
+    assert Page.objects.get(pk=root.pk).numchild == root.get_children().count() == 1
+
+    # seeding the cleared site has to work again
+    call_command("seed_demo", verbosity=0)
+    assert Page.objects.count() == 9
+
+
+@pytest.mark.django_db
 def test_seed_demo_builds_one_page_of_every_type(seeded_home):
     seeded_types = {
         page.specific_class for page in seeded_home.get_descendants(inclusive=True)
@@ -92,7 +126,11 @@ def test_every_live_page_is_served(seeded_home):
 
         response = client.get(url)
         assert response.status_code == 200, f"{url} -> {response.status_code}"
-        assert page.title in response.content.decode(), url
+
+        html = response.content.decode()
+        assert page.title in html, url
+        if page.search_description:
+            assert page.search_description in html, url
 
 
 @pytest.mark.django_db

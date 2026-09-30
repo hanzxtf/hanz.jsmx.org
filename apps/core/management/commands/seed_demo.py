@@ -33,11 +33,22 @@ SAMPLE_IMAGE = base64.b64decode(
 class Command(BaseCommand):
     help = (
         "Create sample content: every page type, every block type, menus, a form, "
-        "a showcase and the site settings. Safe to run more than once."
+        "a showcase and the site settings. Safe to run more than once. With "
+        "--clear it removes that content again."
     )
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--clear",
+            action="store_true",
+            help="Remove the sample content instead of creating it.",
+        )
 
     @transaction.atomic
     def handle(self, *args, **options):
+        if options["clear"]:
+            return self.clear()
+
         home = self.home_page()
         # home_page may have replaced the site along with the placeholder page
         site = self.site()
@@ -48,6 +59,7 @@ class Command(BaseCommand):
         faq = self.faq()
         cta = self.cta()
 
+        home.search_description = "Sample home page for local development."
         home.body = self.home_blocks(image, testimonial, member, faq, cta)
         home.save()
 
@@ -56,6 +68,7 @@ class Command(BaseCommand):
             FlexPage,
             "about",
             title="About",
+            search_description="Who we are.",
             body=[
                 ("heading", {"heading_text": "About us", "size": "h2"}),
                 ("paragraph", "<p>Sample content for the about page.</p>"),
@@ -73,6 +86,7 @@ class Command(BaseCommand):
             ShowcasePage,
             "work",
             title="Work",
+            search_description="Selected client work and products.",
             introduction="Selected client work and products.",
         )
 
@@ -81,6 +95,7 @@ class Command(BaseCommand):
             FormPage,
             "contact",
             title="Contact",
+            search_description="Tell us what you are building.",
             to_address="hello@example.com",
             from_address="noreply@example.com",
             subject="New contact form submission",
@@ -179,6 +194,57 @@ class Command(BaseCommand):
             )
         )
 
+    def clear(self):
+        """Remove the sample content, leaving an empty site that still serves."""
+        home = self.site().root_page.specific
+
+        if not isinstance(home, FlexPage):
+            self.stdout.write(
+                "Nothing to clear: the site is not running the sample home page."
+            )
+            return
+
+        # delete through the queryset, then resync the count treebeard keeps on the
+        # parent: deleting a page outside the admin leaves that count stale
+        home.get_children().filter(slug__in=["about", "work", "contact"]).delete()
+        self.sync_numchild(home)
+
+        home.body = []
+        home.search_description = ""
+        home.save()
+
+        Testimonial.objects.filter(author="Ada Sample").delete()
+        TeamMember.objects.filter(name="Grace Sample").delete()
+        Faq.objects.filter(question="What is this?").delete()
+        Cta.objects.filter(title="Start a project").delete()
+        Tag.objects.filter(name__in=["Case study", "Product"]).delete()
+        MenuItem.objects.filter(link_url="https://example.com/docs").delete()
+        MenuItem.objects.filter(
+            menu__slug__in=["main-menu", "footer-menu"], link_page=home
+        ).delete()
+
+        settings = SiteSettings.for_site(self.site())
+        for field in (
+            "site_title",
+            "site_description",
+            "contact_email",
+            "contact_phone",
+            "address",
+        ):
+            setattr(settings, field, "")
+        settings.site_logo = None
+        settings.save()
+
+        get_image_model().objects.filter(title="Sample image").delete()
+
+        self.stdout.write(self.style.SUCCESS("Removed the sample content."))
+
+    def sync_numchild(self, page):
+        """Recount a page's children so treebeard's cached count cannot drift."""
+        page.numchild = page.get_children().count()
+        Page.objects.filter(pk=page.pk).update(numchild=page.numchild)
+        return page
+
     def site(self):
         site = Site.objects.filter(is_default_site=True).first()
         if site is None:
@@ -205,10 +271,10 @@ class Command(BaseCommand):
         hostname, port, site_name = site.hostname, site.port, site.site_name
         site.delete()
         if home is not None:
-            home.delete()
+            root.get_children().filter(slug="home").delete()
 
-        # treebeard picks its insert branch from the cached numchild
-        root.refresh_from_db()
+        # treebeard picks its insert branch from the cached child count
+        self.sync_numchild(root)
         home = FlexPage(title="Home", slug="home")
         root.add_child(instance=home)
         Site.objects.create(

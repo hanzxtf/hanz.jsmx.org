@@ -194,6 +194,10 @@ dev-migrate:
 seed:
     uv run manage.py seed_demo
 
+# remove the sample site again, leaving an empty site that still serves
+unseed:
+    uv run manage.py seed_demo --clear
+
 vite-dev:
     cd frontend && pnpm run dev
 
