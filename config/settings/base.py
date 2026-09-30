@@ -222,8 +222,3 @@ EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 
 # Increase the maximum number of fields for complex page models
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
-
-# Webpack loader settings
-WEBPACK_LOADER = {
-    "MANIFEST_FILE": os.path.join(BASE_DIR, "apps/frontend/build/manifest.json"),
-}

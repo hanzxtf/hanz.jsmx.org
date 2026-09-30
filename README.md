@@ -4,7 +4,7 @@ A modern, flexible foundation for building high-performance marketing websites w
 
 ## Features
 
-- **Django 5.2 LTS** and **Wagtail 7.0 LTS** - Latest stable versions
+- **Django 5.2 LTS** and **Wagtail 7.4 LTS** - Latest stable versions
 - **SQLite** as primary database with Litestream replication
 - **Tailwind CSS v4** with **DaisyUI v5** - Modern utility-first CSS framework
 - **Turbo 8** + **Stimulus 3** - Enhanced interactivity without complex JavaScript
@@ -100,8 +100,9 @@ The database is a SQLite file at `db/database.db`; media files live on disk.
 - `just django-dev` / `just vite-dev` - Run one of them alone
 - `just dev-migrate` - Apply database migrations
 - `just makemigrations` - Create new migrations
-- `just vite-build` - Build frontend assets
-- `just install` - Sync Python and frontend dependencies
+- `just vite-build` - Build frontend assets (commit the result, the server never runs pnpm)
+- `just lint` - Check formatting and unused imports
+- `just install` - Sync Python and frontend dependencies and install the pre-commit hooks
 - `uv run manage.py createsuperuser` - Create an admin user
 
 ## Content Modeling

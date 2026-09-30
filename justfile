@@ -104,10 +104,10 @@ freebsd-wagtail-configure:
     sysrc wagtail_enable=YES
 
 mise-set-to-dev:
-    sed -i 's/production/development/g' .miserc.toml
+    sed -i 's/^env = .*/env = ["development"]/' .miserc.toml
 
 mise-set-to-prod:
-    sed -i 's/development/production/g' .miserc.toml
+    sed -i 's/^env = .*/env = ["production"]/' .miserc.toml
 
 setup-mise:
     # trust and install
@@ -146,13 +146,13 @@ setup-cron:
     sh $(pwd)/prod/freebsd/scripts/setup-cron.sh
 
 setup-staticfiles:
-	CMD="$VENV_PY manage.py collectstatic --no-input --clear" just run-www
+    CMD="$VENV_PY manage.py collectstatic --no-input --clear" just run-www
 
 setup-db:
     just prod-migrate
 
 prod-migrate:
-	CMD="$VENV_PY manage.py migrate" just run-www
+    CMD="$VENV_PY manage.py migrate" just run-www
 
 prod-start:
     service litestream restart || service litestream start
@@ -164,17 +164,17 @@ run-www:
     env HOME=/home/www su -m www -c "sh -c '$CMD'"
 
 git-pull:
-	CMD="git pull --ff-only" just run-www
+    CMD="git pull --ff-only" just run-www
 
 ################################################################################
 # ---- DEV ---- #
 ################################################################################
 
 vite-install:
-	cd frontend && pnpm install
+    cd frontend && pnpm install
 
 django-install:
-	uv sync
+    uv sync
 
 django-dev:
     uv run uvicorn config.asgi:application \
@@ -185,26 +185,26 @@ django-dev:
         --port 8000
 
 makemigrations:
-	uv run manage.py makemigrations
+    uv run manage.py makemigrations
 
 dev-migrate:
-	uv run manage.py migrate
+    uv run manage.py migrate
 
 vite-dev:
-	cd frontend && pnpm run dev
+    cd frontend && pnpm run dev
 
 vite-build:
-	cd frontend && pnpm run build
+    cd frontend && pnpm run build
 
 clean:
-	rm -rf .venv frontend/dist frontend/node_modules
+    rm -rf .venv frontend/dist frontend/node_modules
 
 pre-commit-install:
-	uv run pre-commit install
+    uv run pre-commit install
 
 lint:
-	uv run ruff check .
-	uv run ruff format --check .
+    uv run ruff check .
+    uv run ruff format --check .
 
 [parallel]
 install: vite-install django-install pre-commit-install
